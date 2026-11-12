@@ -1,0 +1,1374 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7f3">
+  <title>格物 LabPlot · 论文实验记录台</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23145243'/%3E%3Cpath d='M6 23l6-10 5 4 8-11' fill='none' stroke='%23d7f0b3' stroke-width='3'/%3E%3C/svg%3E">
+  <style>
+:root{
+  color-scheme:dark;--ink:#edf2ff;--muted:#b8c2d9;--dim:#96a4c3;--line:#303b54;
+  --green:#a8bcff;--deep:#647ce0;--pale:#2b3458;--paper:#0a1020;--white:#11192b;--warm:#ddae75;
+  --sans:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --mono:"SFMono-Regular","IBM Plex Mono",Consolas,ui-monospace,monospace;
+  font:14px/1.55 var(--sans);color:var(--ink);background:var(--paper);font-synthesis:none
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0}button,input,select,textarea{font:inherit;color:inherit}button,select{cursor:pointer}
+button{border:0;background:none}a{color:var(--green);text-underline-offset:3px}button:disabled,select:disabled{cursor:not-allowed;opacity:.5}
+button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #b9a0ff;outline-offset:2px}
+[hidden]{display:none!important}h1,h2,h3,p{margin:0}button,select,a,input{touch-action:manipulation}button{font-weight:560}
+svg.ico{width:17px;height:17px;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;fill:none;flex:none;display:inline-block}
+.sr-only,.skip:not(:focus){position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.skip:focus{position:fixed;top:10px;left:12px;z-index:20;background:#182238;padding:8px 14px}
+.shell{display:grid;grid-template-columns:228px minmax(0,1fr);min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;height:100dvh;display:flex;flex-direction:column;padding:0 18px 14px;background:#0a1020;border-right:1px solid var(--line);z-index:5}
+.brand{min-height:83px;display:flex;gap:11px;align-items:center;padding:0 9px;letter-spacing:-.07em;font-size:25px;font-weight:780}
+.brand b{color:#a8bcff;font:560 14px/1 var(--sans);letter-spacing:-.04em;margin-left:3px}
+.brand-mark{width:38px;height:38px;display:grid;place-items:center;background:var(--deep);border-radius:11px}
+.brand-mark svg{width:30px;height:30px;fill:var(--deep);stroke:#edf0ff;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+.side-heading{margin:31px 9px 13px;display:flex;align-items:center;justify-content:space-between;color:#b8c2d9}
+.side-heading h2{font-size:12px;letter-spacing:.1em;font-weight:650}.side-heading span{font:12px var(--mono)}
+.new-book,.side-import{height:37px;width:100%;border-radius:7px;display:flex;align-items:center;justify-content:center;gap:8px}
+.new-book{color:#fff;background:var(--deep);margin-bottom:17px}.new-book:hover,.primary:hover{background:#9faeff}
+#library{display:flex;flex-direction:column;gap:6px;overflow-y:auto;margin-inline:-2px;padding:2px}
+.library-item{display:flex;width:100%;align-items:center;text-align:left;padding:10px;gap:9px;border:1px solid transparent;border-radius:8px;min-width:0}
+.library-item:hover,.side-import:hover{background:#171f32}.library-item[aria-current=true]{background:#2b3458;border-color:#28354e;color:#edf2ff}
+.book-symbol{width:29px;height:32px;border-radius:6px;background:#171f32;display:grid;place-items:center;flex:none;color:#b8c2d9}
+.library-item[aria-current=true] .book-symbol{background:#394a78;color:var(--deep)}
+.book-label{overflow:hidden;display:block}.book-label b,.book-label small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.book-label b{font-size:13px;font-weight:650}.book-label small{color:#96a4c3;font-size:11px;margin-top:2px}
+.side-bottom{margin-top:auto;padding-top:14px}.side-import{justify-content:flex-start;padding-left:10px;color:#b8c2d9}.workspace-info{display:flex;align-items:center;gap:10px;border-top:1px solid #303b54;padding:17px 8px 3px;margin-top:12px}.workspace-info>svg{width:21px;height:21px;color:#b8c2d9}.workspace-info b,.workspace-info small{display:block}.workspace-info b{font-size:12px}.workspace-info small{font-size:11px;color:var(--muted)}
+main{min-width:0}.topbar{height:61px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,3vw,52px);background:#0a1020}
+.crumb,.actions,.section-name,.meta,.axis-controls,.legend,#save-status{display:flex;align-items:center;gap:9px}
+.crumb{font-size:12px;color:var(--dim)}.crumb strong{font-weight:600;color:#edf2ff}.crumb .slash{color:#96a4c3;margin:0 2px}.crumb .ico{width:15px;height:15px}
+#save-status{gap:7px;font-size:12px;color:#88e0c9}.status-dot{width:7px;height:7px;border-radius:50%;background:#88e0c9;box-shadow:0 0 0 3px #394a78}.status-dot.warn{background:#ddae75;box-shadow:0 0 0 3px #343042}
+.content{max-width:1560px;margin:0 auto;padding:clamp(24px,3.2vw,48px) clamp(18px,3vw,52px) 40px}
+.intro{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 25px}.intro-text{min-width:0}.meta{gap:7px;min-height:19px;font-size:11px;letter-spacing:.015em;color:var(--muted);flex-wrap:wrap}.meta a{color:#b8c2d9;text-decoration:none;display:inline-flex;gap:4px;align-items:center}.meta a:hover{text-decoration:underline}.meta .ico{width:13px;height:13px}
+.meta-badge{display:inline-flex;align-items:center;gap:5px;border:1px solid #303b54;background:#2b3458;border-radius:5px;color:#a8bcff;padding:1px 6px;font-weight:650}
+.intro h1,.empty h1{font-size:clamp(28px,3.1vw,44px);line-height:1.18;letter-spacing:-.055em;font-weight:730;margin:11px 0 8px;overflow-wrap:anywhere}
+.intro p{font-size:13px;color:var(--muted);line-height:1.65;max-width:830px}
+.button,.icon-button{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid #303b54;background:#182238;border-radius:7px;min-height:35px;padding:6px 12px;line-height:1.25;white-space:nowrap;font-size:13px}
+.button:hover,.icon-button:hover{background:#171f32;border-color:#394a78}.button.subtle{background:transparent}.button.small,.icon-button{font-size:12px;min-height:32px;padding:5px 10px}.icon-button{width:33px;padding:4px}.button.primary,.primary{background:var(--deep);color:white;border-color:var(--deep)}.button.primary:hover{background:#9faeff}
+.mobile-menu,.scrim{display:none}.analysis-grid{display:grid;grid-template-columns:minmax(0,1.95fr) minmax(255px,.9fr);gap:18px;align-items:stretch}
+.card{background:var(--white);border:1px solid var(--line);border-radius:13px;box-shadow:0 2px 4px #00000018;min-width:0;overflow:hidden}
+.card-head{min-height:62px;display:flex;align-items:center;justify-content:space-between;padding:14px 19px;gap:12px}.section-name{gap:9px;min-width:0}.section-name h2{font-size:17px;letter-spacing:-.025em;font-weight:680;line-height:1.35;overflow-wrap:anywhere}.section-icon{height:29px;width:29px;display:grid;place-items:center;border:1px solid #303b54;background:#2b3458;border-radius:7px;color:#a8bcff;flex:none}
+.actions{gap:7px;flex:none}.plot-toolbar{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 19px 6px;flex-wrap:wrap}
+.segmented{display:inline-flex;background:#171f32;border:1px solid #303b54;border-radius:7px;padding:2px;gap:1px}.segmented button{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#b8c2d9;min-height:26px;padding:3px 8px;border-radius:4px;border:1px solid transparent}.segmented .ico{width:13px;height:13px}.segmented [aria-pressed=true]{color:var(--deep);background:#182238;border-color:#303b54;box-shadow:0 1px 2px #080d271a}
+select{max-width:100%;min-width:0;background-color:#fff;border:1px solid #303b54;border-radius:6px;padding:5px 6px;font-size:12px;color:#b8c2d9}
+.plot{width:100%;padding:0 12px;line-height:0}.plot>svg{max-width:100%;width:100%;height:auto;display:block}.plot [data-row]{cursor:pointer}
+.plot-footer{padding:11px 19px;border-top:1px solid #303b54;display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:50px;flex-wrap:wrap}
+.axis-controls{flex-wrap:wrap;gap:8px}.axis-controls label{font-size:11px;color:var(--muted);display:inline-flex;gap:5px;align-items:center}.axis-controls select{font-weight:580;font-size:11px;padding:3px 4px;max-width:135px}.legend{color:var(--muted);font-size:11px;overflow-wrap:anywhere;gap:5px}.rule{width:15px;border-top:2px dashed #ddae75;display:inline-block}
+.comparison{background:#171f32}.comparison .card-head{padding-bottom:7px}.comparison .section-icon{background:#2b3458;border-color:#303b54}
+.compare-body{padding:3px 18px 15px}.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pair label,.field{display:flex;flex-direction:column;gap:5px;font-weight:550;font-size:12px;color:var(--muted)}.pair select{width:100%;font-weight:600}
+.readout{margin:17px 0 11px;padding:12px 14px;background:var(--deep);color:#fff;border-radius:9px}.readout .cap{font-size:11px;color:#c4cced}.big-delta{display:flex;align-items:baseline;gap:6px;margin-top:1px;color:#edf0ff;font-variant-numeric:tabular-nums}.big-delta b{font:600 clamp(30px,3vw,44px)/1.12 var(--sans);letter-spacing:-.055em}.big-delta small{color:#edf0ff;font-size:11px}.raw-pair{color:#edf0ff;font-size:11px;margin-top:3px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.score-list{margin:0;padding:0;list-style:none}.score-list button{display:grid;grid-template-columns:minmax(66px,1fr) minmax(25px,.75fr) 49px;align-items:center;gap:8px;width:100%;padding:3px 3px;font-size:11px;text-align:left;line-height:1.35;border-radius:3px}.score-list button:hover,.score-list button[aria-pressed=true]{background:#2b3458}.score-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.score-track{height:4px;background:#171f32;border-radius:3px;overflow:hidden}.score-track span{display:block;height:100%;background:#647ce0;border-radius:3px}.score-val{text-align:right;font-family:var(--mono);font-size:10px}
+.data-card{margin-top:19px}.data-card .card-head{min-height:61px}.count{font:11px var(--mono);padding:3px 6px;border-radius:5px;background:#171f32;color:#a8bcff}
+.table-scroll{overflow-x:auto;max-height:500px;scrollbar-width:thin}table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}th,td{text-align:right;white-space:nowrap;border-bottom:1px solid #28354e;padding:8px 12px}th{position:sticky;top:0;z-index:1;background:#171f32;color:#b8c2d9;font-weight:600;font-size:11px;letter-spacing:.02em}th:first-child,td:first-child{padding-left:19px;text-align:left}th:last-child,td:last-child{padding-right:18px;width:78px}td{font-family:var(--mono);font-variant-numeric:tabular-nums}tr.is-selected td{background:#2b3458}tr.is-selected td:first-child{box-shadow:inset 3px 0 #88e0c9}tr:hover td{background:#171f32}tr.is-selected:hover td{background:#2b3458}
+.row-select{display:inline-flex;align-items:center;gap:8px;text-align:left;max-width:210px;white-space:normal;overflow-wrap:anywhere;font:620 12px var(--sans);padding:3px 0;line-height:1.5}.row-select .dot{width:8px;height:8px;border-radius:100%;border:1.5px solid #c4cced;flex:none}.is-selected .dot{background:var(--green);border-color:var(--green)}.baseline-tag{font:550 9px var(--sans);border:1px solid #303b54;border-radius:3px;padding:1px 4px;background:#171f32;color:#b8c2d9}
+.row-action{height:27px;width:27px;display:inline-grid;place-items:center;border-radius:5px;color:#a8bcff}.row-action:hover{background:#2b3458;color:var(--deep)}.row-action .ico{height:15px;width:15px}.table-help{color:var(--dim);padding:9px 19px;font-size:11px;line-height:1.5}.empty{padding:28px}.empty p{color:var(--muted);margin-bottom:18px}.empty-cell{padding:20px!important;text-align:center!important;font:13px var(--sans);color:var(--muted)}.missing{color:#96a4c3}
+.warning,#dialog-error{border-radius:7px;background:#343042;color:#ffd6a2;font-size:13px;padding:9px 12px}.warning{margin-bottom:15px}
+dialog{width:min(465px,calc(100% - 28px));padding:0;border:1px solid var(--line);border-radius:13px;background:#182238;color:var(--ink);box-shadow:0 15px 70px #152b2430;max-height:90dvh}dialog::backdrop{background:#020518b8}.dialog-head,.dialog-foot{display:flex;align-items:center;gap:9px;padding:15px 20px}.dialog-head{justify-content:space-between;border-bottom:1px solid #303b54}.dialog-head h2{font-size:19px;letter-spacing:-.03em}.dialog-foot{justify-content:flex-end;border-top:1px solid #303b54;background:#171f32}.dialog-foot .danger{margin-right:auto;color:#ffb1ac;border-color:#6c474c}#dialog-body{padding:18px 20px;display:grid;gap:13px}#dialog-error{margin:0 20px 14px}.field input,.field textarea,.field select{border:1px solid #303b54;border-radius:6px;background:#182238;padding:8px 9px;width:100%;font-size:13px;color:var(--ink)}.field input[type=color]{height:38px;padding:3px}.field textarea{resize:vertical;min-height:65px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:11px}.check{display:flex;align-items:center;gap:7px;font-size:13px}.check input{accent-color:var(--green)}.form-help{font-size:12px;line-height:1.6;color:var(--muted)}.field input[type=file]{width:100%;padding:6px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:20;border:1px solid #121a2b;background:#121a2b;color:#fff;font-size:13px;border-radius:7px;padding:9px 18px;max-width:90vw;text-align:center;box-shadow:0 4px 18px #172d2026}
+@media(min-width:1500px){.shell{grid-template-columns:246px minmax(0,1fr)}.content{padding-top:48px}.compare-body{padding-inline:22px}.sidebar{padding-inline:22px}}
+@media(max-width:1150px){.shell{grid-template-columns:198px minmax(0,1fr)}.sidebar{padding-inline:13px}.content{padding-inline:22px}.analysis-grid{gap:12px;grid-template-columns:minmax(0,1.6fr) minmax(230px,1fr)}.card-head{padding-inline:14px}.plot-toolbar,.plot-footer{padding-inline:13px}.compare-body{padding-inline:13px}.intro h1{font-size:34px}.section-name h2{font-size:16px}th,td{padding-inline:8px}}
+@media(max-width:950px){.shell{grid-template-columns:1fr}.sidebar{position:fixed;left:0;top:0;width:240px;transform:translateX(-105%);transition:transform .18s}.side-open .sidebar{transform:none}.side-open .scrim{display:block;position:fixed;inset:0;background:#040819aa;z-index:4}.mobile-menu{display:inline-flex}.desk-crumb{display:none!important}.topbar{height:53px}.content{padding-top:24px}}
+@media(max-width:680px){.analysis-grid{grid-template-columns:minmax(0,1fr);gap:12px}.content{padding:20px 12px 26px}.topbar{padding:0 13px}.intro{position:relative;display:block;margin-bottom:16px}.intro h1{font-size:29px;margin:9px 0 5px}.intro p{font-size:12px}.intro .subtle{margin-top:8px;min-height:29px;font-size:11px;padding:4px 8px}.intro .subtle .ico{width:13px;height:13px}.meta{font-size:10px}.comparison .card-head{min-height:47px}.compare-body{padding-bottom:13px}.readout{margin:10px 0 7px}.data-card{margin-top:12px}.section-name{gap:6px}.card-head{min-height:53px}.section-name h2{font-size:16px}.data-card .card-head{min-height:53px}.plot{padding-inline:5px}.data-card .actions{gap:4px}.button.small{padding:5px 7px}.table-help{padding-inline:12px}th:first-child,td:first-child{padding-left:12px}th:last-child,td:last-child{padding-right:10px}.table-scroll{max-height:420px}.pair{grid-template-columns:1fr 1fr}.big-delta b{font-size:36px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+.plot-card{display:flex;flex-direction:column}.plot-footer{margin-top:auto}.plot-hint,.copy-label{font-size:11px;color:var(--muted)}.copy-label{display:inline-flex;align-items:center;gap:4px;padding:5px 0 5px 5px;border-radius:4px}.copy-label .ico{width:13px;height:13px}.copy-label:hover{text-decoration:underline;color:var(--green)}
+.score-list button,.score-head{display:grid;grid-template-columns:minmax(68px,1fr) minmax(32px,.65fr) minmax(34px,.5fr);align-items:center;gap:5px}
+.score-current,.score-val,.score-head span:not(:first-child){text-align:right}.score-current{color:#b8c2d9;font:10px var(--mono)}.score-head{font-size:10px;color:#96a4c3;margin:6px 3px 3px}
+.matrix-toolbar{display:flex;flex-wrap:wrap;gap:9px;align-items:center;justify-content:space-between;padding:0 19px 12px}.matrix-toolbar .segmented button{padding-inline:10px}#matrix-key{display:flex;align-items:center;gap:5px;font-size:10px;color:#96a4c3}#matrix-key i{display:inline-block;width:9px;height:9px;border-radius:2px;background:#b9a0ff}#matrix-key i:nth-child(2){margin-left:6px;background:#57c8bb}
+.heatmap{padding:0 13px 4px;border-collapse:separate;border-spacing:4px 3px}.heatmap th,.heatmap td{background:transparent;border:0;padding:0;text-align:center;white-space:nowrap}.heatmap thead th{font-size:11px;line-height:1.25;padding:3px 2px 4px}.heatmap thead small{display:block;font-size:9px;font-weight:450;color:var(--dim)}.heatmap th:first-child,.heatmap tr th[scope=row]{text-align:left;position:static;padding:0 7px 0 2px}.heatmap tbody th{font:590 12px var(--sans);width:17%}.heatmap td:last-child,.heatmap th:last-child{padding:0;width:auto}.heatmap tr:hover td{background:transparent}.heat-cell{display:block;width:100%;min-width:64px;padding:6px 3px;font:530 12px var(--mono);border:1px solid #b4bdff15;border-radius:4px;line-height:1.25;color:#edf2ff}.heat-cell[aria-pressed=true]{outline:2px solid #b9a0ff;outline-offset:-2px}.heat-cell:hover{box-shadow:inset 0 0 0 1px #b9a0ff}.heat-cell:focus-visible{outline:3px solid var(--green)}
+@media(max-width:680px){.matrix-toolbar{padding:0 12px 8px}.heatmap{padding:0 8px 3px}.heat-cell{min-width:59px}.score-list button{padding-block:5px}}
+/* The notebook navigation and sky are separate from the figure's interactive surface. */
+body{background:radial-gradient(ellipse at 50% 22%,#141c34 0%,#0a1020 68%);min-height:100vh}
+.brand{color:#f4f6ff;font-weight:750}.brand b{color:#adbce3;font-weight:630;letter-spacing:-.035em}.brand-mark{background:linear-gradient(145deg,#a9bcff,#6686e5 52%,#4159b5);border:1px solid #a5baff52;box-shadow:0 0 16px #557bea2a}.brand-mark svg{stroke:#fff;fill:transparent}
+.button.primary,.new-book{background:#9caeff;border-color:#b4c0ff;color:#0b1537;font-weight:680}.button.primary:hover,.new-book:hover{background:#b3bfff;color:#101a37}
+.button.subtle{background:#1c2947a8;border-color:#62779d6e;color:#e1e7ff}.button:hover,.icon-button:hover{border-color:#697ba4}.button:focus-visible{outline-color:#c3caff}
+.topbar{background:#0a1020;color:#bac6e5}.status-dot{background:#74d4b9;box-shadow:0 0 0 3px #73d6be13}.crumb strong{color:#dce4fa}
+.content{max-width:1512px;padding:19px clamp(20px,3.55vw,67px) 34px}
+.intro{isolation:isolate;position:relative;overflow:hidden;margin-bottom:19px;min-height:195px;padding:23px clamp(20px,2.7vw,43px);border:1px solid #2f3b5b;border-radius:17px;background:radial-gradient(ellipse at 75% 54%,#202447 1%,#121b36 40%,#10182b 85%);display:flex;align-items:center;gap:12px}
+#starfield{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-2}
+.intro::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,#11192ce6 0%,#11192ca6 33%,transparent 65%)}
+.intro-text{max-width:63%;position:relative}.intro h1{font-size:clamp(32px,3.75vw,56px);letter-spacing:-.05em;line-height:1.12;margin:12px 0 9px;color:#f5f6ff}.intro p{color:#bac7e3;font-size:13px;max-width:620px}.meta{color:#b0bbdf;gap:10px}.meta a{color:#bdc9e7}.meta-badge{background:#7d8dcc22;border-color:#9aa6ea52;color:#e1e6ff;padding:1px 7px;border-radius:20px}.intro .subtle{position:absolute;right:17px;bottom:15px;backdrop-filter:blur(8px);min-height:30px;font-size:11px}
+.card{background:linear-gradient(132deg,#151e32,#101829 78%);border-color:#2a3650;border-radius:14px;box-shadow:0 3px 15px #05091724}.card-head{min-height:57px}.section-icon{color:#b0c2ff;background:#243050;border:1px solid #3a4969}.section-name h2{color:#eef2ff;letter-spacing:-.02em}
+.segmented{background:#0c1425;border-color:#2c3751}.segmented [aria-pressed=true]{background:#2a3858;color:#e5ebff;border-color:#485a82}.segmented button{color:#a4b3d0}.plot-toolbar select,.axis-controls select,.pair select{background-color:#182338;border-color:#35435e;color:#d9e3fa}.plot-footer{border-color:#26324a;background:#11192a88}.plot-hint{color:#91a2c2}
+.plot>svg>rect[width="100%"]{fill:transparent}.plot>svg text{fill:#b2c0d9}.plot>svg text[font-weight="600"],.plot>svg text[font-weight="650"],.plot>svg text[font-weight="700"]{fill:#e9edff}.plot>svg text[fill="#92691e"]{fill:#e7bc79}.plot>svg line[stroke="#dfe8e2"]{stroke:#37435c}.plot>svg line[stroke="#aebdb5"]{stroke:#53617b}.plot>svg line[stroke="#92691e"]{stroke:#d8ac68}
+.plot [data-row]:focus-visible{outline:1px solid #b2c3ff}.plot [data-row]:hover{filter:brightness(1.15)}
+.comparison{background:linear-gradient(138deg,#1b2440 0%,#172139 46%,#131c31)}.comparison .section-icon{background:#293656;border-color:#415072}.comparison .card-head{padding-bottom:8px}.copy-label{color:#b4c6f1}
+.readout{position:relative;background:linear-gradient(115deg,#323d70,#24305a 72%,#233455);border:1px solid #8798e34a;padding:10px 15px 12px;overflow:hidden}.readout .cap,.raw-pair{color:#c3cfea}.big-delta{color:#e1d5ff}.big-delta b{font-size:clamp(38px,3.65vw,55px);font-weight:570;letter-spacing:-.06em}.big-delta small{color:#e1def5}.readout:after{content:"";position:absolute;right:-8px;top:12px;width:64px;height:64px;border:1px solid #858ed727;border-radius:50%;box-shadow:0 0 0 8px #8795e309,0 0 0 16px #8795e308;pointer-events:none}
+.score-list button,.score-head{grid-template-columns:minmax(70px,1fr) minmax(43px,.62fr) minmax(40px,.4fr)}.score-list button{padding:4px 5px;font-size:12px}.score-current,.score-val{font-size:11px}.score-current{color:#bcc8e0}.score-val{color:#dcd5ff}.score-list button:hover,.score-list button[aria-pressed=true]{background:#35426985}.score-head{color:#9bacca}
+.table-scroll{scrollbar-color:#414f6c transparent}.heatmap,.heatmap tr:hover td{background:transparent}.heatmap thead small{color:#9daac4}.heat-cell{color:#f4f1ff;border-color:#c1c9f412;min-height:29px}.heat-cell[aria-pressed=true]{outline-color:#d9cbff;box-shadow:inset 0 0 10px #d5c6ff22}.heat-cell:hover{box-shadow:inset 0 0 0 1px #c7bdff}.baseline-tag{color:#c8d4fa;background:#26324c;border-color:#3c4a67}.count{background:#212c43;color:#b8c4e1}.table-help{color:#9aabc8}
+dialog{background:#151e30;border-color:#364761}dialog .dialog-head,.dialog-foot{border-color:#34415b}.dialog-foot{background:#111b2f}.field input,.field textarea,.field select{color:#e5edff;background:#0e182b}.warning,#dialog-error{color:#ffdeab;background:#403442}
+@media(min-width:951px){
+ .shell{display:block}.sidebar{position:relative;top:auto;width:100%;height:66px;min-height:66px;display:flex;flex-direction:row;align-items:center;gap:13px;padding:0 170px 0 clamp(22px,3.55vw,67px);border:0;border-bottom:1px solid #27324b;background:#0b1120}
+ .brand{min-height:0;padding:0 19px 0 0;flex:none;font-size:24px;gap:10px}.brand-mark{width:33px;height:33px;border-radius:9px}.brand b{font-size:15px}
+ .side-heading,.workspace-info{display:none}#library{order:1;display:flex;flex-direction:row;gap:5px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:thin;align-items:center}
+ .library-item{width:auto;min-width:max-content;padding:6px 10px;gap:5px;border-radius:7px;color:#aab8d1}.library-item:hover{background:#1c2740}.library-item[aria-current=true]{background:#202d48;border-color:#34466c;color:#dce5ff}.book-symbol,.library-item[aria-current=true] .book-symbol{width:18px;height:20px;color:#b0bff0;background:transparent}.book-symbol .ico{width:14px;height:14px}.book-label b{font-size:12px}.book-label small{display:none}
+ .side-bottom{margin:0;padding:0;order:2;flex:none}.new-book{order:3;height:33px;width:auto;flex:none;margin:0;padding:0 12px}.side-import{height:33px;width:auto;padding:0 10px;color:#b9c7e0}.side-import:hover{background:#1b263d}
+ .topbar{position:absolute;right:clamp(18px,3.55vw,65px);top:0;height:66px;z-index:6;border:0;padding:0;background:transparent;pointer-events:none}.topbar .crumb{display:none}
+ .analysis-grid{grid-template-columns:minmax(0,1.98fr) minmax(270px,.91fr)}
+}
+@media(max-width:950px){.sidebar{background:#101a2d}.brand b{color:#b8c5ec}.brand{min-height:66px}.side-heading h2{color:#afbcda}.library-item[aria-current=true]{color:#e7edff}.library-item[aria-current=true] .book-symbol{color:#b5c8ff}.content{padding:14px 18px 30px}.intro{min-height:181px}.intro h1{font-size:36px}}
+@media(max-width:680px){.content{padding:10px 10px 24px}.intro{padding:18px 13px 39px;min-height:186px;border-radius:13px;margin-bottom:12px}.intro-text{max-width:92%}.intro h1{font-size:clamp(25px,7.2vw,34px)}.intro p{max-width:80%;font-size:11px;line-height:1.6}.intro .meta{gap:6px}.intro .subtle{right:10px;bottom:9px}.intro::after{background:linear-gradient(90deg,#10182be6 2%,#10182b7a 43%,transparent 82%)}.analysis-grid{gap:11px}.topbar{height:48px}.card{border-radius:11px}.raw-pair{font-size:12px}.big-delta b{font-size:38px}.table-help{font-size:11px}}
+
+</style>
+</head>
+<body>
+  <a class="skip" href="#main">跳到实验内容</a>
+  <div class="shell">
+    <aside class="sidebar" id="sidebar" aria-label="实验册导航">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 36 36"><path d="M6 26h24M8 23l7-12 6 6 6-10"/><circle cx="15" cy="11" r="2"/><circle cx="21" cy="17" r="2"/></svg></span><span>格物 <b>LabPlot</b></span></div>
+      <div class="side-heading"><h2>我的实验册</h2><span id="book-count"></span></div>
+      <button class="new-book" id="new-book"><i data-icon="plus"></i>新建实验</button>
+      <nav id="library" aria-label="实验列表"></nav>
+      <div class="side-bottom">
+        <button class="side-import" id="import-book"><i data-icon="upload"></i>从 CSV 导入</button>
+        <div class="workspace-info"><i data-icon="drive"></i><div><b>本地工作区</b><small>数据存储在当前浏览器</small></div></div>
+      </div>
+    </aside>
+    <button class="scrim" id="scrim" aria-label="关闭实验册" hidden></button>
+    <main id="main">
+      <header class="topbar">
+        <div class="crumb"><button id="menu" class="icon-button mobile-menu" aria-label="打开实验册" aria-controls="sidebar" aria-expanded="false"><i data-icon="menu"></i></button><i class="desk-crumb" data-icon="notebook"></i><span>实验册</span><span class="slash">/</span><strong>实验工作台</strong></div>
+        <div id="save-status" role="status"></div>
+      </header>
+      <div class="content">
+        <div id="warning" class="warning" role="alert" hidden></div>
+        <section id="workspace" aria-label="当前实验">
+          <div class="intro">
+            <canvas id="starfield" aria-hidden="true"></canvas>
+            <div class="intro-text"><div class="meta" id="meta"></div><h1 id="title"></h1><p id="description"></p></div>
+            <button id="edit-book" class="button subtle"><i data-icon="sliders"></i>实验设置</button>
+          </div>
+          <div class="analysis-grid">
+            <section class="plot-card card" aria-labelledby="plot-title">
+              <header class="card-head"><div class="section-name"><span class="section-icon"><i data-icon="chart"></i></span><h2 id="plot-title">结果图表</h2></div>
+                <div class="actions"><button class="icon-button" id="style-chart" title="图表样式" aria-label="图表样式"><i data-icon="sliders"></i></button><button class="button small" id="png"><i data-icon="download"></i>PNG</button></div>
+              </header>
+              <div class="plot-toolbar">
+                <div class="segmented" role="group" aria-label="图表类型"><button data-type="bar"><i data-icon="bars"></i>柱状</button><button data-type="line"><i data-icon="line"></i>折线</button><button data-type="scatter"><i data-icon="scatter"></i>散点</button></div>
+                <label class="select-wrap"><span class="sr-only">数据显示</span><select id="mode"><option value="delta">相对基线</option><option value="raw">原始数值</option></select></label>
+              </div>
+              <div class="plot" id="plot" aria-label="交互图表"></div>
+              <div class="plot-footer"><div class="axis-controls"><label id="x-wrap" hidden>X 轴 <select id="x-axis"></select></label><label><span id="y-caption">指标</span> <select id="y-axis"></select></label></div><span class="plot-hint">点选数据标记以比较</span></div>
+            </section>
+            <section class="comparison card" aria-labelledby="comparison-title">
+              <header class="card-head"><div class="section-name"><span class="section-icon"><i data-icon="compare"></i></span><h2 id="comparison-title">基线对照</h2></div><button class="copy-label" id="copy-result" title="复制当前指标的对照描述"><i data-icon="copy"></i>复制结论</button></header>
+              <div class="compare-body">
+                <div class="pair"><label>基线配置<select id="baseline"></select></label><label>对照配置<select id="selected"></select></label></div>
+                <div id="comparison-readout" aria-live="polite"></div>
+              </div>
+            </section>
+          </div>
+          <section class="data-card card" aria-labelledby="table-title">
+            <header class="card-head"><div class="section-name"><span class="section-icon"><i data-icon="table"></i></span><h2 id="table-title">实验数据</h2><span id="table-count" class="count"></span></div><div class="actions"><button class="button small" id="csv"><i data-icon="download"></i>CSV</button><button class="button small primary" id="add-row"><i data-icon="plus"></i>添加记录</button></div></header>
+            <div class="matrix-toolbar"><div class="segmented" role="group" aria-label="数据视图"><button data-view="table"><i data-icon="table"></i>原始数据</button><button data-view="heat"><i data-icon="heat"></i>消融热图</button></div><span id="matrix-key" hidden><i></i>低于基线 <i></i>高于基线</span></div>
+            <div id="raw-table" class="table-scroll"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+            <div id="heat-table" class="table-scroll" hidden></div>
+            <p class="table-help" id="table-help"></p>
+          </section>
+        </section>
+        <section id="empty-library" class="card empty" hidden><h1>新建第一份实验记录</h1><p>给实验命名并设置指标，或从已有的 CSV 表格开始。</p><button class="button primary" id="first-book">新建实验</button></section>
+      </div>
+    </main>
+  </div>
+  <dialog id="dialog"><form id="dialog-form"><header class="dialog-head"><h2 id="dialog-title"></h2><button class="icon-button" type="button" data-close aria-label="关闭"><i data-icon="close"></i></button></header><div id="dialog-body"></div><p id="dialog-error" role="alert" hidden></p><footer class="dialog-foot"><button class="button" type="button" data-close>取消</button><button id="dialog-submit" class="button primary" type="submit">保存</button></footer></form></dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <noscript>请启用 JavaScript 以编辑数据、绘图和保存实验。</noscript>
+<script>
+/* Shared by the offline page and the Node test suite. */
+(() => {
+  'use strict';
+
+  let sequence = 0;
+
+  function uid() {
+    if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+    sequence += 1;
+    return 'lab-' + Date.now().toString(36) + '-' + sequence.toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+  }
+
+  function experiment(id, title, columns, chart = {}) {
+    return {
+      id, title, description: '', columns, rows: [], baseline: '', selected: '',
+      chart: {
+        x: 0, y: 1, type: 'scatter', mode: 'raw',
+        color: '#6387f1', grid: true, showValues: true, title: '', ...chart
+      },
+      source: null, modified: false
+    };
+  }
+
+  function blank(title = '未命名实验') {
+    return experiment(uid(), title, [{ name: '指标 X', unit: '' }, { name: '指标 Y', unit: '' }]);
+  }
+
+  function row(label = '', values = []) {
+    return { id: uid(), label: String(label), values: values.map(value => String(value ?? '')) };
+  }
+
+  function samples() {
+    const bert = experiment('bert', 'BERT 预训练任务消融', [
+      { name: 'MNLI-m', unit: '%' }, { name: 'QNLI', unit: '%' },
+      { name: 'MRPC', unit: '%' }, { name: 'SST-2', unit: '%' }, { name: 'SQuAD F1', unit: '分' }
+    ], { type: 'bar', mode: 'delta' });
+    bert.description = '比较四种配置在五项开发集任务上的表现。No NSP 移除下一句预测，LTR 改为从左到右建模，最后一组在微调时加入双向 LSTM。';
+    bert.rows = [
+      ['bert-base', 'BERT Base', '84.4', '88.4', '86.7', '92.7', '88.5'],
+      ['no-nsp', 'No NSP', '83.9', '84.9', '86.5', '92.6', '87.9'],
+      ['ltr', 'LTR + No NSP', '82.1', '84.3', '77.5', '92.1', '77.8'],
+      ['bilstm', '+ BiLSTM', '82.1', '84.1', '75.7', '91.6', '84.9']
+    ].map(([id, label, ...values]) => ({ id, label, values }));
+    bert.baseline = 'bert-base';
+    bert.selected = 'no-nsp';
+    bert.source = { label: 'Devlin et al. · NAACL 2019 · 表 5', url: 'https://aclanthology.org/N19-1423.pdf#page=8' };
+
+    const efficient = experiment('efficientnet', 'EfficientNet 模型缩放', [
+      { name: '参数量', unit: 'M' }, { name: 'FLOPs', unit: 'B' },
+      { name: 'Top-1', unit: '%' }, { name: 'Top-5', unit: '%' }
+    ], { x: 0, y: 2 });
+    efficient.description = '比较 EfficientNet B0–B7 在 ImageNet 上的准确率、参数量和计算量。M 表示百万参数，B 表示十亿次浮点运算。';
+    efficient.rows = [
+      ['5.3', '0.39', '76.3', '93.2'], ['7.8', '0.70', '78.8', '94.4'],
+      ['9.2', '1.0', '79.8', '94.9'], ['12', '1.8', '81.1', '95.5'],
+      ['19', '4.2', '82.6', '96.3'], ['30', '9.9', '83.3', '96.7'],
+      ['43', '19', '84.0', '96.9'], ['66', '37', '84.4', '97.1']
+    ].map((values, index) => ({ id: 'b' + index, label: 'B' + index, values }));
+    efficient.baseline = 'b0';
+    efficient.selected = 'b7';
+    efficient.source = { label: 'Tan & Le · ICML 2019 · 表 2', url: 'https://proceedings.mlr.press/v97/tan19a/tan19a.pdf#page=6' };
+    return [bert, efficient];
+  }
+
+  const decimal = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i;
+
+  function number(raw) {
+    if (typeof raw === 'number') return Number.isFinite(raw) ? raw : null;
+    if (typeof raw !== 'string') return null;
+    const text = raw.trim();
+    if (!decimal.test(text)) return null;
+    const value = Number(text);
+    return Number.isFinite(value) ? value : null;
+  }
+
+  function fmt(raw) {
+    const value = number(raw);
+    if (value === null) return '—';
+    if (typeof raw === 'string' || Number.isInteger(value)) return String(value);
+    // Only snap to a shorter decimal when it is within rounding noise of the original.
+    const rounded = Number(value.toPrecision(12));
+    const tolerance = Math.abs(value) * (512 * Number.EPSILON);
+    return String(Math.abs(rounded - value) <= tolerance ? rounded : value);
+  }
+
+  function deltaUnit(unit) {
+    return ['%', '％', '百分比'].includes(unit) ? '个百分点' : unit;
+  }
+
+  function difference(left, right) {
+    const a = number(left), b = number(right);
+    if (a === null || b === null) return null;
+    if (a === b) return 0;
+    // Align the two decimal measurements before subtracting close scores.
+    function decimalParts(value) {
+      const [mantissa, exponent = '0'] = String(value).split('e');
+      const [integer, fraction = ''] = mantissa.split('.');
+      return { digits: BigInt(integer + fraction), power: Number(exponent) - fraction.length };
+    }
+    const l = decimalParts(a), r = decimalParts(b), power = Math.min(l.power, r.power);
+    const digits = l.digits * 10n ** BigInt(l.power - power) - r.digits * 10n ** BigInt(r.power - power);
+    return number(String(digits) + 'e' + String(power));
+  }
+
+  function compare(exp, selectedId, baselineId) {
+    const selected = exp.rows.find(item => item.id === selectedId);
+    const baseline = exp.rows.find(item => item.id === baselineId);
+    const forAxis = axis => difference(selected?.values[axis], baseline?.values[axis]);
+    return { dx: forAxis(exp.chart.x), dy: forAxis(exp.chart.y) };
+  }
+
+  function points(exp) {
+    const result = [];
+    for (const { id, label, values } of exp.rows) {
+      const x = number(values[exp.chart.x]);
+      const y = number(values[exp.chart.y]);
+      if (x !== null && y !== null) result.push({ id, label, x, y });
+    }
+    return result;
+  }
+
+  const headerPunctuation = /[\\[\]()（）]/g;
+  const escapedHeaderPunctuation = /\\([\\[\]()（）])/g;
+
+  function columnHeader(column) {
+    const escape = value => value.replace(headerPunctuation, '\\$&');
+    const name = escape(column.name);
+    return column.unit ? name + ' [' + escape(column.unit) + ']' : name;
+  }
+
+  function parseColumn(input) {
+    const text = input.trim();
+    const unescape = value => value.trim().replace(escapedHeaderPunctuation, '$1');
+    const closing = text.slice(-1);
+    const opening = { ']': '[', ')': '(', '）': '（' }[closing];
+    if (opening) {
+      const starts = [];
+      for (let i = 0; i < text.length; i += 1) {
+        if (text[i] === '\\') {
+          i += 1;
+        } else if (text[i] === opening) {
+          starts.push(i);
+        } else if (text[i] === closing && starts.length) {
+          const start = starts.pop();
+          if (i === text.length - 1) {
+            return { name: unescape(text.slice(0, start)), unit: unescape(text.slice(start + 1, i)) };
+          }
+        }
+      }
+    }
+    return { name: unescape(text), unit: '' };
+  }
+
+  // Quoting alone does not stop spreadsheet software from interpreting textual cells as formulas.
+  const formulaPrefix = /^(?:[\t\r\n]|\s*[=+@\-＝＋＠－])/u;
+
+  function protectText(value) {
+    return value.startsWith("'") || formulaPrefix.test(value) ? "'" + value : value;
+  }
+
+  function unprotectText(value) {
+    if (value.startsWith("'")) {
+      const rest = value.slice(1);
+      if (rest.startsWith("'") || formulaPrefix.test(rest)) return rest;
+    }
+    return value;
+  }
+
+  function quoteCSV(value) {
+    return /[",\r\n]/.test(value) ? '"' + value.replace(/"/g, '""') + '"' : value;
+  }
+
+  function csv(exp) {
+    const headers = ['配置名称', ...exp.columns.map(column => protectText(columnHeader(column)))];
+    const records = [headers];
+    for (const { label, values } of exp.rows) {
+      const cells = values.map(value => value.trim() && number(value) === null ? protectText(value) : value);
+      records.push([protectText(label), ...cells]);
+    }
+    return '\uFEFF' + records.map(fields => fields.map(quoteCSV).join(',')).join('\r\n') + '\r\n';
+  }
+
+  function readCSV(input) {
+    const text = input.replace(/^\uFEFF/, '');
+    const records = [];
+    let fields = [], field = '', quoted = false, closedQuote = false;
+    let line = 1, startLine = 1;
+
+    function finishRecord() {
+      if (fields.length || field.trim() || closedQuote) {
+        fields.push(field);
+        records.push({ fields, line: startLine });
+      }
+      fields = [];
+      field = '';
+      closedQuote = false;
+    }
+
+    for (let i = 0; i < text.length; i += 1) {
+      const char = text[i];
+      if (quoted) {
+        if (char === '"' && text[i + 1] === '"') {
+          field += '"';
+          i += 1;
+        } else if (char === '"') {
+          quoted = false;
+          closedQuote = true;
+        } else {
+          field += char;
+          if (char === '\n' || (char === '\r' && text[i + 1] !== '\n')) line += 1;
+        }
+      } else if (char === ',') {
+        fields.push(field);
+        field = '';
+        closedQuote = false;
+      } else if (char === '\n' || char === '\r') {
+        finishRecord();
+        if (char === '\r' && text[i + 1] === '\n') i += 1;
+        line += 1;
+        startLine = line;
+      } else if (closedQuote) {
+        throw new Error('第 ' + line + ' 行的结束引号后应接逗号或换行。');
+      } else if (char === '"') {
+        if (field.length) throw new Error('第 ' + line + ' 行的文本引号应位于字段开头。');
+        quoted = true;
+      } else {
+        field += char;
+      }
+    }
+    if (quoted) throw new Error('第 ' + startLine + ' 行起的字段缺少结束引号。');
+    finishRecord();
+    return records;
+  }
+
+  function fromCSV(text, title = '导入的实验') {
+    if (typeof text !== 'string') throw new Error('请选择 UTF-8 编码的 CSV 文本文件。');
+    const [header, ...records] = readCSV(text);
+    if (!header || header.fields.length < 3 || !header.fields[0].trim()) {
+      throw new Error('表头首列需填写配置名称，其后至少需要两列数值指标。');
+    }
+    const columns = header.fields.slice(1).map((value, index) => {
+      const column = parseColumn(unprotectText(value));
+      if (!column.name) throw new Error('表头第 ' + (index + 2) + ' 列缺少指标名称。');
+      return column;
+    });
+    const rows = records.map(({ fields, line }) => {
+      if (fields.length !== header.fields.length) {
+        throw new Error('第 ' + line + ' 行有 ' + fields.length + ' 列，表头要求 ' + header.fields.length + ' 列。');
+      }
+      const values = fields.slice(1);
+      values.forEach((value, index) => {
+        if (value.trim() && number(value) === null) {
+          throw new Error('第 ' + line + ' 行「' + columns[index].name + '」请填写有限的十进制数或留空。');
+        }
+      });
+      return row(unprotectText(fields[0]), values);
+    });
+    const imported = experiment(uid(), title, columns);
+    imported.rows = rows;
+    imported.baseline = rows[0]?.id ?? '';
+    imported.selected = (rows[1] ?? rows[0])?.id ?? '';
+    imported.modified = true;
+    return imported;
+  }
+
+  const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
+  const isString = value => typeof value === 'string';
+  const isId = value => isString(value) && value.trim().length > 0;
+
+  function validSource(source) {
+    if (source === null) return true;
+    if (!isObject(source) || !isString(source.label) || !isString(source.url)) return false;
+    try {
+      const url = new URL(source.url);
+      return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  }
+
+  function validExperiment(exp) {
+    if (!isObject(exp) || !isId(exp.id) || !isString(exp.title) || !isString(exp.description) ||
+        typeof exp.modified !== 'boolean' || !validSource(exp.source)) return false;
+    if (!Array.isArray(exp.columns) || exp.columns.length < 2) return false;
+    for (const column of exp.columns) {
+      if (!isObject(column) || !isString(column.name) || !isString(column.unit)) return false;
+    }
+    const chart = exp.chart;
+    const validAxis = index => Number.isInteger(index) && index >= 0 && index < exp.columns.length;
+    if (!isObject(chart) || !validAxis(chart.x) || !validAxis(chart.y) ||
+        !['bar', 'scatter', 'line'].includes(chart.type) || !['raw', 'delta'].includes(chart.mode) ||
+        !isString(chart.color) || !/^#[\da-f]{6}$/i.test(chart.color) || !isString(chart.title) ||
+        typeof chart.grid !== 'boolean' || typeof chart.showValues !== 'boolean') return false;
+    if (!Array.isArray(exp.rows)) return false;
+    const ids = new Set();
+    for (const item of exp.rows) {
+      if (!isObject(item) || !isId(item.id) || ids.has(item.id) || !isString(item.label) ||
+          !Array.isArray(item.values) || item.values.length !== exp.columns.length) return false;
+      for (const value of item.values) {
+        if (!isString(value)) return false;
+      }
+      ids.add(item.id);
+    }
+    return [exp.baseline, exp.selected].every(id => id === '' || ids.has(id));
+  }
+
+  function validBook(book) {
+    if (!isObject(book) || book.version !== 1 || !Array.isArray(book.experiments)) return false;
+    const ids = new Set();
+    for (const exp of book.experiments) {
+      if (!validExperiment(exp) || ids.has(exp.id)) return false;
+      ids.add(exp.id);
+    }
+    return true;
+  }
+
+  const api = { uid, samples, blank, row, number, fmt, deltaUnit, difference, compare, points, parseColumn, columnHeader, csv, fromCSV, validBook };
+  globalThis.LabModel = api;
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+})();
+
+</script>
+<script>
+/* Offline SVG and PNG rendering for the experiment notebook. */
+(() => {
+  'use strict';
+
+  const FONT = "Inter, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif";
+  const INK = '#293d35';
+  const MUTED = '#62746c';
+  const AXIS = '#aebdb5';
+  const GRID = '#dfe8e2';
+  const OCHRE = '#92691e';
+  const DEFAULT_COLOR = '#147859';
+  const TYPES = { bar: '柱状图', line: '折线图', scatter: '散点图' };
+  const finite = Number.isFinite;
+  const compact = value => Number(value.toFixed(2));
+
+  function escapeXML(value) {
+    return String(value ?? '')
+      .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uD800-\uDFFF\uFFFE\uFFFF]/gu, '\uFFFD')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+  }
+
+  function characterWidth(ch) {
+    if (/\p{Mark}/u.test(ch)) return 0;
+    if (/[^\u0000-\u024f]/u.test(ch)) return 1;
+    if (/\s/.test(ch)) return 0.3;
+    if (/[ilI1.,:;'|!]/.test(ch)) return 0.34;
+    if (/[MW@mw]/.test(ch)) return 0.85;
+    return 0.59;
+  }
+
+  function textWidth(value, fontSize) {
+    let width = 0;
+    for (const ch of String(value)) width += characterWidth(ch) * fontSize;
+    return width;
+  }
+
+  function shorten(value, available, fontSize) {
+    const str = String(value).replace(/\s+/g, ' ').trim();
+    if (textWidth(str, fontSize) <= available) return str;
+    let result = '', used = fontSize;
+    for (const ch of str) {
+      used += characterWidth(ch) * fontSize;
+      if (used > available) break;
+      result += ch;
+    }
+    return result + '…';
+  }
+
+  function wrapText(value, available, fontSize) {
+    const result = [];
+    for (const paragraph of String(value).split(/\r?\n/)) {
+      let line = '', used = 0;
+      for (const chunk of paragraph.match(/\s+|[A-Za-z0-9]+|[^\sA-Za-z0-9]/gu) || []) {
+        const width = textWidth(chunk, fontSize);
+        if (line && used + width > available) {
+          result.push(line.trimEnd());
+          line = ''; used = 0;
+        }
+        if (!line && /^\s+$/.test(chunk)) continue;
+        if (width <= available) {
+          line += chunk; used += width;
+        } else {
+          for (const ch of chunk) {
+            const advance = characterWidth(ch) * fontSize;
+            if (line && used + advance > available) {
+              result.push(line); line = ''; used = 0;
+            }
+            line += ch; used += advance;
+          }
+        }
+      }
+      result.push(line.trimEnd());
+    }
+    return result;
+  }
+
+  function textAt(x, y, content, size = 11, fill = MUTED, anchor = 'start', weight = 450) {
+    return `<text x="${compact(x)}" y="${compact(y)}" font-size="${size}" font-weight="${weight}" text-anchor="${anchor}" fill="${fill}">${escapeXML(content)}</text>`;
+  }
+
+  function rule(x1, y1, x2, y2, stroke, extra = '') {
+    return `<line x1="${compact(x1)}" y1="${compact(y1)}" x2="${compact(x2)}" y2="${compact(y2)}" stroke="${stroke}" ${extra}/>`;
+  }
+
+  function palette(value) {
+    let hex = String(value || '');
+    if (/^#[a-f0-9]{3}$/i.test(hex)) hex = '#' + [...hex.slice(1)].map(ch => ch + ch).join('');
+    return /^#[a-f0-9]{6}$/i.test(hex) ? hex.toLowerCase() : DEFAULT_COLOR;
+  }
+
+  function mix(color, other, amount) {
+    return '#' + [1, 3, 5].map(i => {
+      const a = parseInt(color.slice(i, i + 2), 16), b = parseInt(other.slice(i, i + 2), 16);
+      return Math.round(a * (1 - amount) + b * amount).toString(16).padStart(2, '0');
+    }).join('');
+  }
+
+  function numberLabel(value, precision = 6) {
+    if (value === 0) return '0';
+    const magnitude = Math.abs(value);
+    if (magnitude < 0.001 || magnitude >= 1e6) {
+      const [mantissa, exponent] = value.toExponential(precision - 1).split('e');
+      return `${Number(mantissa)}e${Number(exponent)}`.replace(/-/g, '−');
+    }
+    return String(Number(value.toPrecision(precision))).replace(/-/g, '−');
+  }
+
+  // Work in units near the data's magnitude so spans crossing ±1e308 stay finite.
+  function scaleFor(values, tickCount, includeZero) {
+    let low = includeZero ? 0 : Infinity, high = includeZero ? 0 : -Infinity;
+    for (const v of values) if (finite(v)) { low = Math.min(low, v); high = Math.max(high, v); }
+    const magnitude = Math.max(Math.abs(low), Math.abs(high));
+    const unit = magnitude === 0 ? 1 : Math.pow(10, Math.floor(Math.log10(magnitude))) || Number.MIN_VALUE;
+    low /= unit; high /= unit;
+    const minStep = Number.MIN_VALUE / unit;
+    if (high === low) {
+      const pad = low === 0 ? 1 : Math.max(Math.abs(low) * 0.08, minStep);
+      if (!includeZero || low < 0) low -= pad;
+      if (!includeZero || high >= 0) high += pad;
+    } else if (!includeZero) {
+      // Keep measured points away from the frame while preserving tight metric ranges.
+      const pad = (high - low) * 0.035;
+      low -= pad; high += pad;
+    }
+    const rough = Math.max((high - low) / tickCount, minStep, Number.EPSILON * Math.max(Math.abs(low), Math.abs(high)) * 4);
+    const power = 10 ** Math.floor(Math.log10(rough));
+    const multiple = rough / power;
+    const nice = [1, 2, 2.5, 5, 10].find(n => n >= multiple - 1e-9) || 10;
+    const step = nice * power;
+    let first = Math.floor(low / step + 1e-9), last = Math.ceil(high / step - 1e-9);
+    if (first === last) { first--; last++; }
+    const lower = first * step, upper = last * step;
+    const ticks = [];
+    for (let i = 0; i <= last - first; i++) {
+      const scaled = (first + i) * step, value = scaled * unit;
+      if (!finite(value)) continue;
+      const precision = Math.min(17, Math.max(5, Math.ceil(Math.log10(Math.abs(scaled) / step || 1)) + 2));
+      ticks.push({ fraction: (scaled - lower) / (upper - lower), label: numberLabel(value, precision), zero: scaled === 0 });
+    }
+    return { ticks, fraction: value => Math.max(0, Math.min(1, (value / unit - lower) / (upper - lower))) };
+  }
+
+  function normalize(options) {
+    const o = options || {};
+    const type = Object.hasOwn(TYPES, o.type) ? o.type : 'bar';
+    const mode = o.mode === 'delta' ? 'delta' : 'raw';
+    let yLabel = String(o.yLabel || 'Y 指标');
+    if (mode === 'delta') yLabel = yLabel.replace(/[%％]|百分比/g, '百分点');
+    const source = String(o.source || '').trim();
+    const points = (Array.isArray(o.points) ? o.points : []).map((p, i) => ({
+      id: String(p?.id ?? i), label: String(p?.label || `记录 ${i + 1}`),
+      x: p?.x, y: p?.y, index: i,
+    }));
+    const baselineId = o.baselineId == null ? null : String(o.baselineId);
+    const baselineLabel = String(o.baselineLabel || points.find(p => p.id === baselineId)?.label || '');
+    return {
+      type, mode, points, baselineId, baselineLabel, yLabel, source,
+      xLabel: String(o.xLabel || (type === 'scatter' ? 'X 指标' : '实验配置')),
+      selectedId: o.selectedId == null ? null : String(o.selectedId),
+      baselineY: finite(o.baselineY) ? o.baselineY : null,
+      color: palette(o.color), title: String(o.title || '实验指标对比'),
+      grid: o.grid !== false, showValues: Boolean(o.showValues),
+    };
+  }
+
+  function valueLabel(o, value) {
+    return (o.mode === 'delta' && value > 0 ? '+' : '') + numberLabel(value);
+  }
+
+  function baselineText(o) {
+    if (o.baselineY === null && !o.baselineLabel) return '';
+    const name = o.baselineLabel ? `基线 · ${o.baselineLabel}` : '基线';
+    return o.baselineY === null ? `${name}（缺测）` : `${name}  ${valueLabel(o, o.baselineY)}`;
+  }
+
+  function categoryLabels(o, box, slot, font) {
+    const n = o.points.length;
+    let widest = 0;
+    for (const p of o.points) widest = Math.max(widest, Math.min(82, textWidth(p.label, font)));
+    const stride = Math.max(1, Math.ceil((widest + 12) / slot));
+    const budget = Math.min(92, slot * stride - 7);
+    const selected = o.points.findIndex(p => p.id === o.selectedId);
+    const indices = new Set([selected, 0, n - 1]);
+    for (let i = 0; i < n; i += stride) indices.add(i);
+    const occupied = [], output = [];
+    for (const i of indices) {
+      if (i < 0) continue;
+      const x = box.left + (i + 0.5) * slot;
+      const label = shorten(o.points[i].label, budget, font);
+      const width = textWidth(label, font);
+      const center = Math.max(width / 2 + 3, Math.min(box.width - width / 2 - 3, x));
+      const a = center - width / 2 - 2, b = center + width / 2 + 2;
+      if (occupied.some(r => a < r[1] && b > r[0])) continue;
+      occupied.push([a, b]);
+      output.push(textAt(center, box.bottom + 18, label, font, i === selected ? INK : MUTED, 'middle', i === selected ? 650 : 450));
+    }
+    return output.join('');
+  }
+
+  function valueLabels(o, plotted, box, font, labelColor) {
+    const occupied = [], output = [];
+    const priority = p => p.id === o.selectedId ? 0 : p.id === o.baselineId ? 1 : 2;
+    const ordered = [...plotted].sort((a, b) => priority(a) - priority(b));
+    for (const p of ordered) {
+      const value = valueLabel(o, p.y), width = textWidth(value, font) + 6;
+      const up = { x: p.cx, y: p.cy - 8 }, down = { x: p.cx, y: p.cy + font + 8 };
+      const axisSide = o.type === 'bar' && p.y < 0 ? [down, up] : [up, down];
+      const candidates = o.type === 'bar' ? axisSide : [...axisSide, { x: p.cx + 11 + width / 2, y: p.cy + 4 }, { x: p.cx - 11 - width / 2, y: p.cy + 4 }];
+      for (const position of candidates) {
+        const x = Math.max(box.left + width / 2, Math.min(box.right - width / 2, position.x));
+        const y = position.y;
+        if (y - font < box.top - 10 || y > box.bottom + 3) continue;
+        const rect = { l: x - width / 2, r: x + width / 2, t: y - font, b: y + 3 };
+        if (occupied.some(b => rect.l < b.r && rect.r > b.l && rect.t < b.b && rect.b > b.t)) continue;
+        occupied.push(rect);
+        output.push(textAt(x, y, value, font, p.id === o.selectedId ? labelColor : MUTED, 'middle', p.id === o.selectedId ? 700 : 500));
+        break;
+      }
+    }
+    return `<g pointer-events="none">${output.join('')}</g>`;
+  }
+
+  function emptyPlot(o, width, height) {
+    const x = width / 2, y = height / 2 - 15;
+    let help = o.type === 'scatter' ? '请在同一条记录中填写 X、Y 指标。' : '请在记录中填写所选 Y 指标的数值。';
+    if (o.mode === 'delta' && o.baselineY === null) help = '请设置有 Y 指标数值的基线记录。';
+    return `<g aria-hidden="true" fill="none" stroke="#a9bdb2" stroke-width="1.7" stroke-linecap="round">${rule(x - 13, y + 4, x + 13, y + 4, '#a9bdb2')}${rule(x - 8, y, x - 8, y - 7, '#a9bdb2')}${rule(x, y, x, y - 14, '#87a696')}${rule(x + 8, y, x + 8, y - 10, '#a9bdb2')}</g>` +
+      textAt(x, y + 29, '暂无可绘制的数据', 14, INK, 'middle', 650) + textAt(x, y + 51, help, 11, MUTED, 'middle');
+  }
+
+  function plot(o, width, height, report = false) {
+    const valid = o.points.filter(p => finite(p.y) && (o.type !== 'scatter' || finite(p.x)));
+    if (!valid.length) return emptyPlot(o, width, height);
+    const compactLayout = width < 440;
+    const font = compactLayout ? 10 : 11.5;
+    const yValues = valid.map(p => p.y);
+    if (o.baselineY !== null) yValues.push(o.baselineY);
+    const sy = scaleFor(yValues, height < 206 ? 3 : height < 285 ? 4 : 5, o.type === 'bar');
+    let tickWidth = 12;
+    for (const tick of sy.ticks) tickWidth = Math.max(tickWidth, textWidth(tick.label, font));
+    const box = {
+      width, left: Math.min(Math.ceil(tickWidth) + 15, width * 0.55), right: width - (compactLayout ? 12 : 18),
+      top: height < 180 ? 28 : 34, bottom: height - (height < 180 ? 43 : 51),
+    };
+    const plotWidth = box.right - box.left, plotHeight = box.bottom - box.top;
+    const yAt = fraction => box.bottom - fraction * plotHeight;
+    const xAt = fraction => box.left + fraction * plotWidth;
+    const sx = o.type === 'scatter' ? scaleFor(valid.map(p => p.x), width < 400 ? 3 : width < 680 ? 6 : 8, false) : null;
+    const slot = plotWidth / o.points.length;
+    const plotted = valid.map(p => ({ ...p, cx: sx ? xAt(sx.fraction(p.x)) : box.left + (p.index + 0.5) * slot, cy: yAt(sy.fraction(p.y)) }));
+    const parts = [], baseline = baselineText(o);
+    const headerY = height < 180 ? 12 : 15;
+    let yTitleBudget = width - 14;
+    if (baseline && !report) {
+      const cap = Math.min(180, width * 0.40), caption = shorten(baseline, cap - 21, font);
+      const captionWidth = textWidth(caption, font), end = width - 6, start = end - captionWidth;
+      if (o.baselineY !== null) parts.push(rule(start - 21, headerY - 4, start - 5, headerY - 4, OCHRE, 'stroke-dasharray="4 3" stroke-width="1.35"'));
+      parts.push(textAt(end, headerY, caption, font, OCHRE, 'end', 550));
+      yTitleBudget = start - 29;
+    }
+    parts.push(textAt(3, headerY, shorten(o.yLabel, yTitleBudget, font), font, INK, 'start', 600));
+    for (const tick of sy.ticks) {
+      const y = yAt(tick.fraction);
+      if (o.grid && tick.fraction > 0.00001) parts.push(rule(box.left, y, box.right, y, GRID, 'stroke-width="1" stroke-dasharray="3 4"'));
+      parts.push(textAt(box.left - 8, y + font * 0.34, tick.label, font, MUTED, 'end'));
+    }
+    if (sx) {
+      for (const tick of sx.ticks) {
+        const x = xAt(tick.fraction), widthOfText = textWidth(tick.label, font);
+        if (o.grid && tick.fraction > 0 && tick.fraction < 1) parts.push(rule(x, box.top, x, box.bottom, GRID, 'stroke-width="0.8" stroke-dasharray="3 4"'));
+        parts.push(rule(x, box.bottom, x, box.bottom + 4, AXIS), textAt(Math.min(width - widthOfText / 2 - 2, Math.max(widthOfText / 2 + 2, x)), box.bottom + 18, tick.label, font, MUTED, 'middle'));
+      }
+    } else {
+      parts.push(categoryLabels(o, box, slot, font));
+    }
+    parts.push(rule(box.left, box.bottom, box.right, box.bottom, AXIS, 'stroke-width="1"'));
+    parts.push(textAt((box.left + box.right) / 2, height - 7, shorten(o.xLabel, plotWidth, font), font, INK, 'middle', 550));
+    const baselineLine = o.baselineY === null ? '' : rule(box.left, yAt(sy.fraction(o.baselineY)), box.right, yAt(sy.fraction(o.baselineY)), OCHRE, 'stroke-width="1.35" stroke-dasharray="6 4" pointer-events="none"');
+    if (o.type !== 'bar') parts.push(baselineLine);
+    if (o.type === 'line') {
+      let previous = -2, path = '';
+      for (const p of plotted) {
+        path += `${p.index === previous + 1 ? 'L' : 'M'}${compact(p.cx)},${compact(p.cy)} `;
+        previous = p.index;
+      }
+      parts.push(`<path d="${path.trim()}" fill="none" stroke="${o.color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`);
+    }
+    const zeroY = o.type === 'bar' ? yAt(sy.fraction(0)) : 0;
+    if (o.type === 'bar' && zeroY > box.top + 1 && zeroY < box.bottom - 1) parts.push(rule(box.left, zeroY, box.right, zeroY, AXIS, 'stroke-width="1.15"'));
+    const barWidth = Math.min(54, slot * 0.61);
+    const hasSelection = plotted.some(p => p.id === o.selectedId);
+    const mutedColor = mix(o.color, '#ffffff', 0.37);
+    const pointStroke = mix(o.color, '#203d31', 0.34);
+    const lightStroke = mix(o.color, '#77877d', 0.35);
+    const selectedColor = mix(o.color, '#102f23', 0.36);
+    const radius = o.type === 'scatter' ? 4.7 : 4.1;
+    // Draw the selected dot last so tied scatter coordinates still show the selection.
+    const order = hasSelection ? [...plotted.filter(p => p.id !== o.selectedId), ...plotted.filter(p => p.id === o.selectedId)] : plotted;
+    for (const p of order) {
+      const selected = p.id === o.selectedId, active = selected || !hasSelection;
+      const fill = active ? o.color : mutedColor;
+      const summary = `${p.label} · ${o.type === 'scatter' ? o.xLabel + ' ' + numberLabel(p.x) + ' · ' : ''}${o.yLabel} ${valueLabel(o, p.y)}`;
+      const attrs = report ? '' : ` data-row="${escapeXML(p.id)}" role="button" tabindex="0" cursor="pointer" aria-label="${escapeXML(summary)}"`;
+      parts.push(`<g${attrs}><title>${escapeXML(summary)}</title>`);
+      if (o.type === 'bar') {
+        const top = Math.min(p.cy, zeroY), barHeight = Math.abs(zeroY - p.cy);
+        if (!report) {
+          const hitWidth = Math.min(slot - Math.min(0.2, slot / 8), Math.max(18, barWidth));
+          const hitTop = Math.max(box.top - 3, top - 3), hitBottom = Math.min(box.bottom + 3, Math.max(p.cy, zeroY) + 3);
+          parts.push(`<rect x="${compact(p.cx - hitWidth / 2)}" y="${compact(hitTop)}" width="${compact(hitWidth)}" height="${compact(Math.max(6, hitBottom - hitTop))}" fill="transparent"/>`);
+        }
+        if (barHeight < 0.02) parts.push(rule(p.cx - barWidth / 2, zeroY, p.cx + barWidth / 2, zeroY, active ? pointStroke : lightStroke, 'stroke-width="2"'));
+        else parts.push(`<rect x="${compact(p.cx - barWidth / 2)}" y="${compact(top)}" width="${compact(barWidth)}" height="${compact(barHeight)}" rx="${compact(Math.min(3, barWidth / 6, barHeight / 3))}" fill="${fill}" stroke="${active ? pointStroke : lightStroke}" stroke-width="0.65"/>`);
+      } else {
+        if (!report) parts.push(`<circle cx="${compact(p.cx)}" cy="${compact(p.cy)}" r="10" fill="transparent"/>`);
+        if (selected) parts.push(`<circle cx="${compact(p.cx)}" cy="${compact(p.cy)}" r="${radius + 4}" fill="${mix(o.color, '#ffffff', 0.82)}" stroke="${mix(o.color, '#ffffff', 0.5)}" stroke-width="0.8"/>`);
+        parts.push(`<circle cx="${compact(p.cx)}" cy="${compact(p.cy)}" r="${selected ? radius + 0.7 : radius}" fill="${fill}" stroke="${o.type === 'line' ? '#ffffff' : (active ? pointStroke : lightStroke)}" stroke-width="${o.type === 'line' ? 1.6 : 0.95}"/>`);
+      }
+      parts.push('</g>');
+    }
+    if (o.type === 'bar') parts.push(baselineLine);
+    if (o.showValues) parts.push(valueLabels(o, plotted, box, compactLayout ? 10 : 11.5, selectedColor));
+    return parts.join('');
+  }
+
+  function svg(options = {}) {
+    const o = normalize(options);
+    const width = finite(options.width) ? Math.max(180, Math.min(8192, options.width)) : 720;
+    const height = finite(options.height) ? Math.max(140, Math.min(8192, options.height)) : 295;
+    const description = [TYPES[o.type], o.xLabel, o.yLabel, baselineText(o), o.source].filter(Boolean).join(' · ');
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${compact(width)}" height="${compact(height)}" viewBox="0 0 ${compact(width)} ${compact(height)}" role="group" aria-label="${escapeXML(o.title)}" font-family="${FONT}" fill="${INK}"><title>${escapeXML(o.title)}</title><desc>${escapeXML(description)}</desc><rect width="100%" height="100%" fill="#ffffff"/>${plot(o, width, height)}</svg>`;
+  }
+
+  function reportFigure(o) {
+    const width = 1000, pad = 35, inside = width - 2 * pad, scale = 1.6;
+    const titleLines = wrapText(o.title, inside, 25);
+    const sourceLines = wrapText(o.source || '未填写来源', inside - 76, 11.5);
+    const legendY = 67 + (titleLines.length - 1) * 32 + 27;
+    const plotTop = legendY + 22, plotHeight = 358;
+    const sourceY = plotTop + plotHeight + 35;
+    const logicalHeight = Math.max(562.5, sourceY + 16 * (sourceLines.length - 1) + 25);
+    const pixelHeight = Math.ceil(logicalHeight * scale);
+    const parts = [
+      `<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="${pixelHeight}" viewBox="0 0 ${width} ${pixelHeight / scale}" font-family="${FONT}" fill="${INK}">`,
+      `<rect width="100%" height="100%" fill="#ffffff"/>`,
+      textAt(pad, 27, '格物 LabPlot', 12, DEFAULT_COLOR, 'start', 700),
+      textAt(width - pad, 27, TYPES[o.type], 11.5, MUTED, 'end', 500),
+    ];
+    titleLines.forEach((line, i) => parts.push(textAt(pad, 67 + i * 32, line, 25, INK, 'start', 680)));
+    const selected = o.points.find(p => p.id === o.selectedId);
+    const series = selected ? `当前记录 · ${selected.label}` : o.yLabel;
+    const legend = shorten(series, 350, 12);
+    parts.push(`<circle cx="${pad + 5}" cy="${legendY - 4}" r="4.5" fill="${o.color}" stroke="${mix(o.color, INK, 0.4)}" stroke-width="1"/>`, textAt(pad + 17, legendY, legend, 12, INK));
+    const baseline = baselineText(o);
+    if (baseline) {
+      const start = pad + textWidth(legend, 12) + 47;
+      if (o.baselineY !== null) parts.push(rule(start, legendY - 4, start + 22, legendY - 4, OCHRE, 'stroke-width="1.6" stroke-dasharray="6 4"'));
+      parts.push(textAt(start + 29, legendY, shorten(baseline, width - pad - start - 29, 12), 12, OCHRE));
+    }
+    parts.push(`<g transform="translate(${pad} ${plotTop})">${plot(o, inside, plotHeight, true)}</g>`, rule(pad, sourceY - 19, width - pad, sourceY - 19, GRID), textAt(pad, sourceY, '数据来源', 11.5, INK, 'start', 650));
+    sourceLines.forEach((line, i) => parts.push(textAt(pad + 76, sourceY + i * 16, line, 11.5, MUTED)));
+    parts.push('</svg>');
+    return { markup: parts.join(''), width: 1600, height: pixelHeight };
+  }
+
+  async function png(options = {}) {
+    const figure = reportFigure(normalize(options));
+    const image = new Image();
+    const objectURL = URL.createObjectURL(new Blob([figure.markup], { type: 'image/svg+xml;charset=utf-8' }));
+    try {
+      await new Promise((resolve, reject) => {
+        image.onload = resolve;
+        image.onerror = () => reject(new Error('图表图像加载失败，请重新导出。'));
+        image.src = objectURL;
+      });
+      const canvas = document.createElement('canvas');
+      canvas.width = figure.width; canvas.height = figure.height;
+      const context = canvas.getContext('2d');
+      if (!context) throw new Error('浏览器无法创建 PNG 画布。');
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      return await new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('PNG 导出失败，请重试。')), 'image/png'));
+    } finally {
+      URL.revokeObjectURL(objectURL);
+    }
+  }
+
+  const charts = Object.freeze({ svg, png });
+  globalThis.LabCharts = charts;
+  if (typeof module !== 'undefined' && module.exports) module.exports = charts;
+})();
+
+</script>
+<script>
+/* A deterministic spiral galaxy. Drawing is limited to the visible header. */
+(() => {
+  'use strict';
+  const canvas = document.getElementById('starfield');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  const header = canvas.parentElement;
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  let seed = 921938;
+  const random = () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
+  const tau = Math.PI * 2;
+  const stars = Array.from({length:1900}, (_, i) => {
+    const radius = Math.pow(random(), 0.68);
+    const spread = (random()+random()+random()-1.5) * (0.12+radius*0.39);
+    return {
+      radius, angle: (i%3)*tau/3 + 4.8*Math.log(0.25+radius) + spread,
+      lift: (random()+random()-1) * (0.017+radius*0.05),
+      size: 0.36+random()**3*1.45, glow:0.25+random()*0.73,
+      color: Math.floor(random()*5), phase:random()*tau
+    };
+  });
+  const sky=Array.from({length:105},()=>({x:random(),y:random(),r:0.35+random()**3*1.05,a:0.15+random()*.64}));
+  const colors=['#a4bcff','#7fe8ff','#d1b2ff','#ffffff','#6a83ff'];
+  let width=0,height=0,ratio=1,frame=0,last=0,visible=true,phase=0,px=0,py=0;
+  function halo(x,y,rx,ry,stops,tilt=0) {
+    ctx.save();ctx.translate(x,y);ctx.rotate(tilt);ctx.scale(rx,ry);
+    const grad=ctx.createRadialGradient(0,0,0,0,0,1);
+    for(const [position,color] of stops) grad.addColorStop(position,color);
+    ctx.fillStyle=grad;ctx.fillRect(-1,-1,2,2);ctx.restore();
+  }
+  function paint() {
+    ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,width,height);
+    const compact=width<620, cx=width*(compact?.81:.755)+px*5, cy=height*(compact?.60:.53)+py*4;
+    const R=compact?Math.min(width*.55,190):Math.min(width*.25,height*1.46,332);
+    const tilt=-.22, cos=Math.cos(tilt), sin=Math.sin(tilt);
+    ctx.globalAlpha=1;
+    halo(cx,cy,R*1.48,R*.60,[[0,'#4254ae5c'],[.45,'#48399d44'],[1,'#35258000']],tilt);
+    halo(cx+R*.30,cy-R*.08,R*.93,R*.36,[[0,'#146f9e63'],[.51,'#1857771e'],[1,'#0b305100']],tilt);
+    for(const s of sky){
+      ctx.globalAlpha=s.a;ctx.fillStyle='#ccd9ff';ctx.fillRect(s.x*width,s.y*height,s.r,s.r);
+    }
+    const count=compact?1100:stars.length;
+    for(let i=0;i<count;i++){
+      const s=stars[i],a=s.angle+phase*(.15+.15/(.15+s.radius));
+      const rx=Math.cos(a)*s.radius*R, ry=(Math.sin(a)*s.radius*.42+s.lift)*R;
+      const x=cx+rx*cos-ry*sin, y=cy+rx*sin+ry*cos;
+      ctx.globalAlpha=s.glow*(.85+.15*Math.sin(phase*3+s.phase));
+      ctx.fillStyle=colors[s.color];const size=s.size*(compact?.82:1);
+      ctx.beginPath();ctx.arc(x,y,size,0,tau);ctx.fill();
+      if(s.size>1.77 && i%8===0){ctx.globalAlpha*=.6;ctx.fillRect(x-3.5,y-.4,7,.8);ctx.fillRect(x-.4,y-3.5,.8,7);}
+    }
+    ctx.globalAlpha=1;
+    halo(cx,cy,R*.27,R*.14,[[0,'#e6eaffde'],[.09,'#d5ddffcb'],[.28,'#a09bff7a'],[.65,'#7468ff2c'],[1,'#7161e600']],tilt);
+    halo(cx,cy,23,15,[[0,'#fffffff5'],[.13,'#eff6ffcc'],[.5,'#a6baff4a'],[1,'#586eff00']],tilt);
+  }
+  function resize() {
+    width=canvas.clientWidth;height=canvas.clientHeight;if(!width||!height)return;
+    ratio=Math.min(devicePixelRatio||1,1.6);
+    canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);paint();
+  }
+  function tick(time) {
+    if(time-last>=40){phase+=Math.min((time-last)/1000,.08)*.14;last=time;paint();}
+    frame=requestAnimationFrame(tick);
+  }
+  function play() {
+    cancelAnimationFrame(frame);frame=0;
+    if(!document.hidden && visible && !motion.matches){last=performance.now();frame=requestAnimationFrame(tick);}
+    else if(width)paint();
+  }
+  header.addEventListener('pointermove',e=>{
+    if(motion.matches || e.pointerType==='touch')return;
+    const box=header.getBoundingClientRect();px=(e.clientX-box.left)/box.width-.5;py=(e.clientY-box.top)/box.height-.5;
+  });
+  header.addEventListener('pointerleave',()=>{px=0;py=0;});
+  new ResizeObserver(resize).observe(canvas);
+  new IntersectionObserver(([item])=>{visible=item.isIntersecting;play();}).observe(header);
+  document.addEventListener('visibilitychange',play);motion.addEventListener('change',play);resize();play();
+})();
+
+</script>
+<script>
+(() => {
+  "use strict";
+  const M = globalThis.LabModel;
+  const C = globalThis.LabCharts;
+  const el = id => document.getElementById(id);
+  const escape = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
+  const drawings = {
+    plus:'<path d="M12 5v14M5 12h14"/>',
+    copy:'<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M15 8V4H4v12h4"/>',
+    heat:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+    close:'<path d="m6 6 12 12M18 6 6 18"/>',
+    chart:'<path d="M3 4v16h18M6 15l4-5 4 2 6-7"/>',
+    line:'<path d="m3 16 5-7 5 4 7-8"/>',
+    bars:'<path d="M4 20v-7h4v7zm6 0V7h4v13zm6 0V3h4v17z"/>',
+    scatter:'<circle cx="5" cy="16" r="1.6"/><circle cx="11" cy="10" r="1.6"/><circle cx="16" cy="13" r="1.6"/><circle cx="20" cy="5" r="1.6"/>',
+    notebook:'<rect x="5" y="3" width="15" height="18" rx="2"/><path d="M9 3v18M3 7h4M3 12h4M3 17h4"/>',
+    paper:'<path d="M6 3h9l4 4v14H6zM14 3v5h5M9 12h7M9 16h6"/>',
+    compare:'<path d="M3 7h14m-3-3 3 3-3 3M21 17H7m3-3-3 3 3 3"/>',
+    table:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14h18M9 9v11"/>',
+    sliders:'<path d="M4 7h5m4 0h7M4 17h9m4 0h3"/><circle cx="11" cy="7" r="2"/><circle cx="15" cy="17" r="2"/>',
+    download:'<path d="M12 3v11m-4-4 4 4 4-4M4 15v5h16v-5"/>',
+    upload:'<path d="M12 15V4m-4 4 4-4 4 4M4 15v5h16v-5"/>',
+    external:'<path d="M13 5h6v6m0-6-9 9M10 6H5v13h13v-6"/>',
+    edit:'<path d="m4 16 10-10 4 4L8 20l-5 1zM13 7l4 4M16 4l2-2 4 4-2 2"/>',
+    trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 10v7m4-7v7"/>',
+    drive:'<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 14h18m-5 3h2"/>',
+    menu:'<path d="M3 6h18M3 12h18M3 18h18"/>',
+    layers:'<path d="m12 3 9 5-9 5-9-5zM3 12l9 5 9-5M3 16l9 5 9-5"/>'
+  };
+  const icon = name => `<svg aria-hidden="true" class="ico" viewBox="0 0 24 24">${drawings[name] || ""}</svg>`;
+  document.querySelectorAll("[data-icon]").forEach(node => {
+    const temp = document.createElement("template"); temp.innerHTML = icon(node.dataset.icon);
+    if (node.className) temp.content.firstElementChild.classList.add(...node.classList);
+    node.replaceWith(temp.content);
+  });
+
+  const BOOK = "gewulab.notebook.v1", ACTIVE = "gewulab.active.v1";
+  let book = {version:1, experiments:M.samples()}, activeId = "", dirty = false, warning = "";
+  let pendingRecovery = false;
+  function unpack(raw) {
+    const value = JSON.parse(raw);
+    if (!M.validBook(value)) throw Error("实验册格式不兼容");
+    return value;
+  }
+  function persist() {
+    try {
+      localStorage.setItem(BOOK, JSON.stringify(book)); dirty = false;
+    } catch {
+      dirty = true; warning = "浏览器未能保存当前改动。请先导出 CSV 备份数据，再检查存储空间或浏览器权限。";
+    }
+  }
+  try {
+    const raw = localStorage.getItem(BOOK);
+    if (raw === null) persist();
+    else {
+      try { book = unpack(raw); }
+      catch {
+        const backup = BOOK + ".backup." + Date.now();
+        localStorage.setItem(backup, raw);
+        pendingRecovery = true;
+        warning = "原实验册格式异常，已在当前浏览器保留原始备份。此页已载入论文样例。";
+        persist();
+      }
+    }
+    activeId = sessionStorage.getItem(ACTIVE) || localStorage.getItem(ACTIVE) || "";
+  } catch {
+    dirty = true; warning = "当前页面无法访问浏览器存储。编辑后可导出 CSV 保存数据。";
+  }
+  const current = () => book.experiments.find(p => p.id === activeId);
+  function normalizeActive() {
+    if (!current()) activeId = book.experiments[0]?.id || "";
+  }
+  function rememberActive() {
+    try { sessionStorage.setItem(ACTIVE,activeId); localStorage.setItem(ACTIVE,activeId); } catch {}
+  }
+  function mutate(action) {
+    if (!dirty) {
+      try {
+        const latest = localStorage.getItem(BOOK);
+        if (latest !== null) book = unpack(latest);
+      } catch { throw Error("无法读取最新实验册，请刷新后重试。"); }
+    }
+    action(book); normalizeActive(); persist();
+    if (!dirty && !pendingRecovery) warning = "";
+    rememberActive(); render();
+  }
+  function changeExperiment(id, update) {
+    mutate(state => {
+      const experiment = state.experiments.find(p => p.id === id);
+      if (!experiment) throw Error("这份实验已被移除，请重新选择。");
+      update(experiment);
+    });
+  }
+  function editCurrent(update) {
+    try { changeExperiment(activeId, update); } catch (error) { notify(error.message); render(); }
+  }
+  function markChanged(p) { if (p.source) p.modified = true; }
+  function readableUnit(unit) { return unit === "%" ? "%" : (unit ? " " + unit : ""); }
+  function valueOf(raw,unit) { const n = M.number(raw); return n === null ? "—" : M.fmt(n) + readableUnit(unit); }
+  function signed(value) { return value === null || !Number.isFinite(value) ? "—" : (value > 0 ? "+" : "") + M.fmt(value); }
+  const difference = M.difference;
+  const fieldName = column => column.name + (column.unit ? " (" + column.unit + ")" : "");
+  const option = (value,label) => `<option value="${escape(value)}">${escape(label)}</option>`;
+  function setOptions(select, pairs, value) {
+    select.innerHTML = pairs.map(([key,label]) => option(key,label)).join("");
+    select.value = String(value ?? ""); select.disabled = pairs.length === 0;
+  }
+  function notify(message) {
+    el("toast").textContent=message; el("toast").hidden=false;
+    clearTimeout(notify.timer); notify.timer=setTimeout(()=>{el("toast").hidden=true;},3200);
+  }
+  function closeMenu() {
+    document.body.classList.remove("side-open"); el("scrim").hidden=true; el("menu").setAttribute("aria-expanded","false");
+  }
+  function updateLibrary() {
+    el("book-count").textContent=String(book.experiments.length).padStart(2,"0");
+    el("library").innerHTML=book.experiments.map(p=>`<button class="library-item" data-book="${escape(p.id)}" aria-current="${p.id===activeId}">
+      <span class="book-symbol">${icon(p.source ? "paper" : "notebook")}</span><span class="book-label"><b>${escape(p.title)}</b><small>${p.rows.length} 条记录 · ${p.columns.length} 项指标</small></span></button>`).join("");
+  }
+  function render() {
+    normalizeActive(); updateLibrary();
+    el("save-status").innerHTML=`<span class="status-dot${dirty ? " warn" : ""}"></span>${dirty ? "仅暂存在页面" : "已保存到本机"}`;
+    el("warning").hidden=!warning; el("warning").textContent=warning;
+    const p=current(); el("workspace").hidden=!p; el("empty-library").hidden=!!p;
+    if (!p) return;
+    el("title").textContent=p.title; el("description").textContent=p.description; el("description").hidden=!p.description;
+    const source=p.source;
+    const safeSource=source && /^https:\/\//i.test(source.url);
+    el("meta").innerHTML=`<span class="meta-badge">${icon(source?"paper":"notebook")}${source ? (p.modified ? "已编辑的论文数据" : "论文数据") : "自建实验"}</span>${safeSource ? `<a href="${escape(source.url)}" target="_blank" rel="noopener noreferrer">${escape(source.label)} ${icon("external")}</a>` : ""}`;
+    el("plot-title").textContent=p.chart.title || "结果图表";
+    document.querySelectorAll("[data-type]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.type===p.chart.type)));
+    el("mode").value=p.chart.mode; el("x-wrap").hidden=p.chart.type!=="scatter";
+    el("y-caption").textContent=p.chart.type==="scatter" ? "Y 轴" : "指标";
+    const cols=p.columns.map((c,i)=>[i,fieldName(c)]);
+    setOptions(el("x-axis"),cols,p.chart.x); setOptions(el("y-axis"),cols,p.chart.y);
+    const rows=p.rows.map(r=>[r.id,r.label]);
+    setOptions(el("baseline"),rows,p.baseline); setOptions(el("selected"),rows,p.selected);
+    renderComparison(p); renderTable(p); renderPlot();
+  }
+  function renderComparison(p) {
+    const a=p.rows.find(r=>r.id===p.selected), b=p.rows.find(r=>r.id===p.baseline);
+    el("copy-result").disabled=!a || !b || M.compare(p,a.id,b.id).dy===null;
+    if (!a || !b) {el("comparison-readout").innerHTML='<p class="table-help">添加记录后即可选择两组配置进行比较。</p>';return;}
+    const i=p.chart.y,c=p.columns[i],d=M.compare(p,a.id,b.id).dy;
+    const changes=p.columns.map((column,index)=>{
+      const av=M.number(a.values[index]),bv=M.number(b.values[index]),diff=difference(av,bv);
+      return `<li><button data-metric="${index}" aria-pressed="${index===i}" title="${escape(column.name)}：基线 ${escape(valueOf(b.values[index],column.unit))}，对照 ${escape(valueOf(a.values[index],column.unit))}"><span class="score-name">${escape(column.name)}</span><span class="score-current">${escape(valueOf(a.values[index],column.unit))}</span><span class="score-val">${escape(signed(diff))}</span></button></li>`;
+    }).join("");
+    el("comparison-readout").innerHTML=`<div class="readout"><div class="cap">${escape(c.name)} · 对照减基线</div><div class="big-delta"><b>${escape(signed(d))}</b><small>${d===null?"":escape(M.deltaUnit(c.unit))}</small></div><div class="raw-pair">${escape(b.label)} ${escape(valueOf(b.values[i],c.unit))} → ${escape(a.label)} ${escape(valueOf(a.values[i],c.unit))}</div></div><div class="score-head"><span>指标</span><span>对照值</span><span>差值</span></div><ul class="score-list">${changes}</ul>`;
+  }
+  function renderTable(p) {
+    el("table-count").textContent=p.rows.length+" 条";
+    el("thead").innerHTML='<tr><th scope="col">配置名称</th>'+p.columns.map(c=>`<th scope="col">${escape(fieldName(c))}</th>`).join("")+'<th scope="col">操作</th></tr>';
+    el("tbody").innerHTML=p.rows.length ? p.rows.map(r=>`<tr class="${r.id===p.selected?"is-selected":""}" data-table-row="${escape(r.id)}">
+      <td><button class="row-select" data-select="${escape(r.id)}" aria-pressed="${r.id===p.selected}" aria-label="选择 ${escape(r.label)}"><span class="dot"></span>${escape(r.label)}${p.baseline===r.id?'<span class="baseline-tag">基线</span>':""}</button></td>
+      ${r.values.map(v=>`<td>${v===""?'<span class="missing">—</span>':escape(v)}</td>`).join("")}
+      <td><button class="row-action" data-edit="${escape(r.id)}" aria-label="编辑 ${escape(r.label)}" title="编辑记录">${icon("edit")}</button><button class="row-action" data-delete="${escape(r.id)}" aria-label="删除 ${escape(r.label)}" title="删除记录">${icon("trash")}</button></td></tr>`).join("")
+      : `<tr><td class="empty-cell" colspan="${p.columns.length+2}">还没有数据。点击“添加记录”录入第一组配置。</td></tr>`;
+    el("table-help").textContent="点击配置名或图中的标记可切换对照，使用行末的铅笔编辑数值。";
+    el("csv").disabled=false;
+    renderMatrix(p);
+  }
+  let viewChoice;
+  function dataView(p) { return viewChoice?.id===p.id ? viewChoice.view : (p.id==="bert"?"heat":"table"); }
+  function renderMatrix(p) {
+    const view=dataView(p), heat=view==="heat", host=el("heat-table");
+    el("raw-table").hidden=heat; host.hidden=!heat; el("matrix-key").hidden=!heat;
+    document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.view===view)));
+    if(!heat)return;
+    el("table-help").textContent="色阶按每项指标分别计算，数值为对照减基线。点击色块可查看这组对照。";
+    if(!p.rows.length){host.innerHTML='<p class="table-help">添加记录后显示各项指标与基线的差值。</p>';return;}
+    const base=p.rows.find(r=>r.id===p.baseline);
+    const diffs=p.rows.map(r=>p.columns.map((_,i)=>difference(M.number(r.values[i]),M.number(base?.values[i]))));
+    const maxima=p.columns.map((_,i)=>diffs.reduce((max,row)=>Math.max(max,Math.abs(row[i]??0)),0));
+    const labels=p.columns.map(c=>`<th scope="col">${escape(c.name)}<small>${escape(M.deltaUnit(c.unit))}</small></th>`).join("");
+    const rows=p.rows.map((r,ri)=>{
+      const squares=p.columns.map((c,i)=>{
+        const d=diffs[ri][i], ratio=maxima[i] && d!==null ? Math.abs(d)/maxima[i] : 0;
+        const end=d<0?[131,110,206]:[49,169,159];
+        const w=d===null||d===0?0:(0.22+0.66*ratio);
+        const neutral=[30,38,59];
+        const fill=d===null?"#181f31":`rgb(${end.map((v,k)=>Math.round(neutral[k]*(1-w)+v*w)).join(",")})`;
+        const chosen=p.selected===r.id && p.chart.y===i;
+        const label=r.label+" · "+c.name+" · "+(d===null?"缺测":signed(d)+" "+M.deltaUnit(c.unit));
+        return `<td><button class="heat-cell" data-heat-row="${escape(r.id)}" data-col="${i}" aria-label="${escape(label)}" title="${escape(label)}" aria-pressed="${chosen}" style="background:${fill}">${escape(signed(d))}</button></td>`;
+      }).join("");
+      return `<tr><th scope="row">${escape(r.label)}${r.id===p.baseline?' <span class="baseline-tag">基线</span>':""}</th>${squares}</tr>`;
+    }).join("");
+    host.innerHTML=`<table class="heatmap"><thead><tr><th scope="col">配置名称</th>${labels}</tr></thead><tbody>${rows}</tbody></table>`;
+  }
+  document.querySelectorAll("[data-view]").forEach(button=>button.onclick=()=>{
+    const p=current(); if(!p)return;viewChoice={id:p.id,view:button.dataset.view};renderTable(p);
+  });
+  el("heat-table").onclick=e=>{
+    const cell=e.target.closest("[data-heat-row]");if(!cell)return;
+    editCurrent(p=>{const index=Number(cell.dataset.col);p.selected=cell.dataset.heatRow;
+      if(p.chart.x===index)p.chart.x=p.chart.y;p.chart.y=index;});
+  };
+  el("copy-result").onclick=async()=>{
+    const p=current(),a=p.rows.find(r=>r.id===p.selected),b=p.rows.find(r=>r.id===p.baseline);
+    if(!a||!b)return;const i=p.chart.y,c=p.columns[i],d=M.compare(p,a.id,b.id).dy;if(d===null)return;
+    const deltaText=d===0?"与基线持平":(d>0?"高于基线 ":"低于基线 ")+M.fmt(Math.abs(d))+" "+M.deltaUnit(c.unit);
+    const source=p.source ? "（"+(p.modified?"本地修改的记录，原始出处为 ":"数据来源为 ")+p.source.label+"）":"";
+    const text=`在 ${c.name} 上，${b.label} 为 ${valueOf(b.values[i],c.unit)}，${a.label} 为 ${valueOf(a.values[i],c.unit)}，${deltaText}。${source}`;
+    try {await navigator.clipboard.writeText(text);notify("已复制对照描述");}
+    catch {showDialog("对照描述",area("选中后即可复制","result",text,'readonly rows="4"'),()=>{},"完成");form.elements.result.select();}
+  };
+  function chartOptions(p,width,height) {
+    const {chart}=p, base=p.rows.find(r=>r.id===p.baseline), yCol=p.columns[chart.y];
+    const baseY=M.number(base?.values[chart.y]), delta=chart.mode==="delta";
+    const points=p.rows.map(r=>{
+      const y=M.number(r.values[chart.y]);
+      return {id:r.id,label:r.label,x:M.number(r.values[chart.x]),y:delta?difference(y,baseY):y};
+    });
+    const unit=delta ? M.deltaUnit(yCol.unit) : yCol.unit;
+    return {width,height,type:chart.type,points,mode:chart.mode,xLabel:chart.type==="scatter"?fieldName(p.columns[chart.x]):"实验配置",
+      yLabel:(delta?"Δ ":"")+yCol.name+(unit?" ("+unit+")":""),title:chart.title||p.title,
+      source:p.source ? (p.modified?"本地编辑副本，原始来源":"数据来源")+" · "+p.source.label : "数据来源 · 自建实验记录",
+      color:chart.color,grid:chart.grid,showValues:chart.showValues,baselineId:p.baseline,baselineLabel:base?.label||"",
+      baselineY:baseY===null?null:(delta?0:baseY),selectedId:p.selected};
+  }
+  function renderPlot() {
+    const p=current(),host=el("plot"); if(!p || !host.clientWidth) return;
+    const space=getComputedStyle(host);
+    const width=Math.max(220,Math.floor(host.clientWidth-parseFloat(space.paddingLeft)-parseFloat(space.paddingRight)));
+    const o=chartOptions(p,width,width<420?225:242);
+    host.innerHTML=C.svg(o);
+    host.setAttribute("aria-label",o.title+"，"+o.yLabel+"，点击数据标记选择对照记录");
+    el("png").disabled=!o.points.some(q=>q.y!==null && (o.type!=="scatter" || q.x!==null));
+  }
+  function selectRow(id) {
+    const p=current(); if(!p || p.selected===id) return;
+    editCurrent(exp=>{if(exp.rows.some(r=>r.id===id)) exp.selected=id;});
+  }
+  el("library").addEventListener("click",e=>{
+    const b=e.target.closest("[data-book]"); if(!b) return;
+    activeId=b.dataset.book; rememberActive();closeMenu();render();
+  });
+  el("menu").onclick=()=>{document.body.classList.add("side-open");el("scrim").hidden=false;el("menu").setAttribute("aria-expanded","true");};
+  el("scrim").onclick=closeMenu;
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu();});
+  document.querySelectorAll("[data-type]").forEach(b=>b.onclick=()=>editCurrent(p=>{p.chart.type=b.dataset.type;}));
+  el("mode").onchange=e=>editCurrent(p=>{p.chart.mode=e.target.value;});
+  function chooseAxis(axis,index) {
+    editCurrent(p=>{const other=axis==="x"?"y":"x";if(p.chart[other]===index)p.chart[other]=p.chart[axis];p.chart[axis]=index;});
+  }
+  el("x-axis").onchange=e=>chooseAxis("x",Number(e.target.value));
+  el("y-axis").onchange=e=>chooseAxis("y",Number(e.target.value));
+  el("comparison-readout").onclick=e=>{const b=e.target.closest("[data-metric]");if(b)chooseAxis("y",Number(b.dataset.metric));};
+  el("baseline").onchange=e=>editCurrent(p=>{p.baseline=e.target.value;});
+  el("selected").onchange=e=>selectRow(e.target.value);
+  el("plot").onclick=e=>{const mark=e.target.closest("[data-row]");if(mark)selectRow(mark.dataset.row);};
+  el("plot").onkeydown=e=>{const mark=e.target.closest("[data-row]");if(mark && (e.key==="Enter"||e.key===" ")){e.preventDefault();const id=mark.dataset.row;selectRow(id);el("plot").querySelector('[data-row="'+CSS.escape(id)+'"]')?.focus();}};
+  el("tbody").onclick=e=>{
+    const b=e.target.closest("button"); if(!b)return;
+    if(b.dataset.select) selectRow(b.dataset.select);
+    if(b.dataset.edit) rowDialog(b.dataset.edit);
+    if(b.dataset.delete) deleteRow(b.dataset.delete);
+  };
+
+  const dialog=el("dialog"), form=el("dialog-form"); let submitDialog=null, busy=false;
+  function showDialog(title,body,onSubmit,submitLabel="保存") {
+    closeMenu();el("dialog-title").textContent=title;el("dialog-body").innerHTML=body;
+    el("dialog-error").hidden=true;el("dialog-submit").textContent=submitLabel;el("dialog-submit").disabled=false;
+    const previous=form.querySelector(".danger");if(previous)previous.remove();
+    submitDialog=onSubmit;busy=false;
+    if(!dialog.open)dialog.showModal();
+    const input=form.querySelector("#dialog-body input:not([type=checkbox]), #dialog-body textarea");
+    if(input)input.focus();
+  }
+  form.addEventListener("click",e=>{if(e.target.closest("[data-close]")&&!busy)dialog.close();});
+  form.onsubmit=async e=>{
+    e.preventDefault();if(busy)return;busy=true;el("dialog-submit").disabled=true;el("dialog-error").hidden=true;
+    try {await submitDialog(new FormData(form));dialog.close();}
+    catch(error){el("dialog-error").textContent=error.message||"保存失败，请重试。";el("dialog-error").hidden=false;}
+    finally{busy=false;el("dialog-submit").disabled=false;}
+  };
+  const textField=(label,name,value="",attrs="")=>`<label class="field">${escape(label)}<input name="${escape(name)}" value="${escape(value)}" ${attrs}></label>`;
+  const area=(label,name,value,attrs="")=>`<label class="field">${escape(label)}<textarea name="${escape(name)}" ${attrs}>${escape(value)}</textarea></label>`;
+  function newOrEdit(existing) {
+    const p=existing||M.blank(""), id=existing?.id;
+    const body=textField("实验名称","title",p.title,'required maxlength="100" placeholder="例如：模型组件消融"')+
+      area("实验说明","description",p.description||"",'maxlength="500" rows="2"')+
+      area("指标与单位","columns",p.columns.map(M.columnHeader).join("\n"),'required rows="4"')+
+      '<p class="form-help">每行一个数值指标，例如“准确率 [%]”或“推理时间 [ms]”。已有列按顺序对应，可在末尾追加指标。</p>';
+    showDialog(id?"实验设置":"新建实验",body,data=>{
+      const title=String(data.get("title")).trim();if(!title)throw Error("请填写实验名称。");
+      const columns=String(data.get("columns")).split(/\r?\n/).map(x=>x.trim()).filter(Boolean).map(M.parseColumn);
+      if(columns.length<2) throw Error("请至少保留两个数值指标。");
+      if(columns.some(c=>!c.name.trim()))throw Error("每项指标都需要名称。");
+      if(new Set(columns.map(M.columnHeader)).size!==columns.length)throw Error("指标名称和单位重复，请分别命名。");
+      const description=String(data.get("description")).trim();
+      if(id)changeExperiment(id,exp=>{
+        if(columns.length<exp.columns.length)throw Error("已有指标按列保存。请保留原有列，可在末尾新增。");
+        const changed=exp.title!==title || exp.description!==description || JSON.stringify(exp.columns)!==JSON.stringify(columns);
+        exp.title=title;exp.description=description;exp.columns=columns;
+        for(const r of exp.rows) while(r.values.length<columns.length)r.values.push("");
+        if(changed)markChanged(exp);
+      });
+      else {const exp=M.blank(title);exp.description=description;exp.columns=columns;mutate(state=>{state.experiments.push(exp);activeId=exp.id;});}
+    },id?"保存设置":"创建实验");
+    if(id){
+      const del=document.createElement("button");del.type="button";del.className="button danger";del.textContent="删除实验";
+      del.onclick=()=>showDialog("删除这份实验？",`<p>将移除“${escape(p.title)}”及其所有记录。可先导出 CSV 留存。</p>`,()=>{
+        mutate(state=>{state.experiments=state.experiments.filter(item=>item.id!==id);});
+      },"删除实验");
+      form.querySelector(".dialog-foot").prepend(del);
+    }
+  }
+  el("new-book").onclick=el("first-book").onclick=()=>newOrEdit(null);
+  el("edit-book").onclick=()=>{if(current())newOrEdit(current());};
+  function rowDialog(rowId) {
+    const p=current(), old=p.rows.find(r=>r.id===rowId), id=p.id;
+    const body=textField("配置名称","label",old?.label||"",'required maxlength="120" placeholder="例如：移除注意力模块"')+
+      '<div class="fields">'+p.columns.map((c,i)=>textField(fieldName(c),"v"+i,old?.values[i]||"", 'inputmode="decimal" placeholder="未测可留空"')).join("")+'</div>';
+    showDialog(old?"编辑记录":"添加记录",body,data=>{
+      const label=String(data.get("label")).trim();if(!label)throw Error("请填写配置名称。");
+      const values=p.columns.map((c,i)=>{
+        const raw=String(data.get("v"+i)||"").trim();
+        if(raw!=="" && M.number(raw)===null)throw Error(c.name+" 需要有限数值，缺测可留空。");
+        return raw;
+      });
+      changeExperiment(id,exp=>{
+        if(JSON.stringify(exp.columns)!==JSON.stringify(p.columns))throw Error("指标已在其他窗口修改，请重新打开此表单。");
+        if(old){
+          const live=exp.rows.find(r=>r.id===old.id);
+          if(!live)throw Error("这条记录已被删除。");
+          if(live.label!==old.label || JSON.stringify(live.values)!==JSON.stringify(old.values))throw Error("这条记录已在其他窗口更新，请重新打开。");
+          if(live.label!==label || JSON.stringify(live.values)!==JSON.stringify(values))markChanged(exp);
+          live.label=label;live.values=values;exp.selected=live.id;
+        }else{
+          const item=M.row(label,values);exp.rows.push(item);if(!exp.baseline)exp.baseline=item.id;exp.selected=item.id;markChanged(exp);
+        }
+      });
+    },old?"保存记录":"添加记录");
+  }
+  el("add-row").onclick=()=>rowDialog(null);
+  function deleteRow(id) {
+    const p=current(), item=p.rows.find(r=>r.id===id);if(!item)return;
+    showDialog("删除这条记录？",`<p>将从“${escape(p.title)}”移除“${escape(item.label)}”。</p>`,()=>{
+      changeExperiment(p.id,exp=>{
+        exp.rows=exp.rows.filter(r=>r.id!==id);
+        if(exp.baseline===id)exp.baseline=exp.rows[0]?.id||"";
+        if(exp.selected===id)exp.selected=exp.rows.find(r=>r.id!==exp.baseline)?.id||exp.baseline;
+        markChanged(exp);
+      });
+    },"删除记录");
+  }
+  el("import-book").onclick=()=>{
+    const body=textField("实验名称（可选）","title","",'maxlength="100" placeholder="默认使用文件名"')+
+      '<label class="field">CSV 文件<input type="file" name="file" accept=".csv,text/csv"></label>'+
+      area("或直接粘贴 CSV","text","",'rows="4" placeholder="配置名称,训练时间 [h],准确率 [%]"')+
+      '<p class="form-help">首列是配置名称，后面至少两列数值指标。空白表示缺测，导入后会新建一份实验。</p>';
+    showDialog("从 CSV 新建实验",body,async data=>{
+      const file=data.get("file"),typed=String(data.get("text")).trim();
+      if(file?.name && typed)throw Error("请选择文件或粘贴文本其中一种。");
+      if(!file?.name && !typed)throw Error("请选择 CSV 文件或粘贴数据。");
+      const raw=file?.name?await file.text():typed;
+      const name=String(data.get("title")).trim()||file?.name?.replace(/\.csv$/i,"")||"导入的实验";
+      const exp=M.fromCSV(raw,name);mutate(state=>{state.experiments.push(exp);activeId=exp.id;});notify("已导入 "+exp.rows.length+" 条记录");
+    },"导入实验");
+  };
+  el("style-chart").onclick=()=>{
+    const p=current(),c=p.chart;
+    const body=textField("图表标题","title",c.title,'maxlength="100" placeholder="默认使用实验名称导出"')+
+      textField("图表配色","color",c.color,'type="color"')+
+      `<label class="check"><input type="checkbox" name="grid" ${c.grid?"checked":""}>显示网格线</label><label class="check"><input type="checkbox" name="values" ${c.showValues?"checked":""}>显示数据标签</label>`;
+    showDialog("图表样式",body,data=>changeExperiment(p.id,exp=>{
+      Object.assign(exp.chart,{title:String(data.get("title")).trim(),color:String(data.get("color")),grid:data.has("grid"),showValues:data.has("values")});
+    }));
+  };
+  function saveFile(blob,name) {
+    const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name.replace(/[\\/:*?"<>|\r\n]/g,"_");
+    document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+  }
+  el("csv").onclick=()=>{const p=current();if(p)saveFile(new Blob([M.csv(p)],{type:"text/csv;charset=utf-8"}),p.title+".csv");};
+  el("png").onclick=async()=>{
+    const p=current();if(!p)return;
+    try {const blob=await C.png(chartOptions(p,1600,900));saveFile(blob,p.title+"-"+p.columns[p.chart.y].name+".png");}
+    catch(error){notify("PNG 导出失败："+(error.message||"请重试"));}
+  };
+  window.addEventListener("storage",event=>{
+    if(event.key!==BOOK || dirty) return;
+    try {
+      if(event.newValue!==null)book=unpack(event.newValue);
+      else {warning="浏览器中的实验册已被清除。可将页面中的数据导出备份。";dirty=true;}
+      normalizeActive();render();
+    }catch{warning="其他窗口的实验册格式异常，请先导出当前记录。";dirty=true;render();}
+  });
+  normalizeActive();render();new ResizeObserver(renderPlot).observe(el("plot"));
+})();
+
+</script>
+</body>
+</html>
