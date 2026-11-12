@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7f3">
+  <title>格物 LabPlot · 论文实验记录台</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23145243'/%3E%3Cpath d='M6 23l6-10 5 4 8-11' fill='none' stroke='%23d7f0b3' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="model.js"></script>
+  <script defer src="chart.js"></script>
+  <script defer src="stars.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到实验内容</a>
+  <div class="shell">
+    <aside class="sidebar" id="sidebar" aria-label="实验册导航">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 36 36"><path d="M6 26h24M8 23l7-12 6 6 6-10"/><circle cx="15" cy="11" r="2"/><circle cx="21" cy="17" r="2"/></svg></span><span>格物 <b>LabPlot</b></span></div>
+      <div class="side-heading"><h2>我的实验册</h2><span id="book-count"></span></div>
+      <button class="new-book" id="new-book"><i data-icon="plus"></i>新建实验</button>
+      <nav id="library" aria-label="实验列表"></nav>
+      <div class="side-bottom">
+        <button class="side-import" id="import-book"><i data-icon="upload"></i>从 CSV 导入</button>
+        <div class="workspace-info"><i data-icon="drive"></i><div><b>本地工作区</b><small>数据存储在当前浏览器</small></div></div>
+      </div>
+    </aside>
+    <button class="scrim" id="scrim" aria-label="关闭实验册" hidden></button>
+    <main id="main">
+      <header class="topbar">
+        <div class="crumb"><button id="menu" class="icon-button mobile-menu" aria-label="打开实验册" aria-controls="sidebar" aria-expanded="false"><i data-icon="menu"></i></button><i class="desk-crumb" data-icon="notebook"></i><span>实验册</span><span class="slash">/</span><strong>实验工作台</strong></div>
+        <div id="save-status" role="status"></div>
+      </header>
+      <div class="content">
+        <div id="warning" class="warning" role="alert" hidden></div>
+        <section id="workspace" aria-label="当前实验">
+          <div class="intro">
+            <canvas id="starfield" aria-hidden="true"></canvas>
+            <div class="intro-text"><div class="meta" id="meta"></div><h1 id="title"></h1><p id="description"></p></div>
+            <button id="edit-book" class="button subtle"><i data-icon="sliders"></i>实验设置</button>
+          </div>
+          <div class="analysis-grid">
+            <section class="plot-card card" aria-labelledby="plot-title">
+              <header class="card-head"><div class="section-name"><span class="section-icon"><i data-icon="chart"></i></span><h2 id="plot-title">结果图表</h2></div>
+                <div class="actions"><button class="icon-button" id="style-chart" title="图表样式" aria-label="图表样式"><i data-icon="sliders"></i></button><button class="button small" id="png"><i data-icon="download"></i>PNG</button></div>
+              </header>
+              <div class="plot-toolbar">
+                <div class="segmented" role="group" aria-label="图表类型"><button data-type="bar"><i data-icon="bars"></i>柱状</button><button data-type="line"><i data-icon="line"></i>折线</button><button data-type="scatter"><i data-icon="scatter"></i>散点</button></div>
+                <label class="select-wrap"><span class="sr-only">数据显示</span><select id="mode"><option value="delta">相对基线</option><option value="raw">原始数值</option></select></label>
+              </div>
+              <div class="plot" id="plot" aria-label="交互图表"></div>
+              <div class="plot-footer"><div class="axis-controls"><label id="x-wrap" hidden>X 轴 <select id="x-axis"></select></label><label><span id="y-caption">指标</span> <select id="y-axis"></select></label></div><span class="plot-hint">点选数据标记以比较</span></div>
+            </section>
+            <section class="comparison card" aria-labelledby="comparison-title">
+              <header class="card-head"><div class="section-name"><span class="section-icon"><i data-icon="compare"></i></span><h2 id="comparison-title">基线对照</h2></div><button class="copy-label" id="copy-result" title="复制当前指标的对照描述"><i data-icon="copy"></i>复制结论</button></header>
+              <div class="compare-body">
+                <div class="pair"><label>基线配置<select id="baseline"></select></label><label>对照配置<select id="selected"></select></label></div>
+                <div id="comparison-readout" aria-live="polite"></div>
+              </div>
+            </section>
+          </div>
+          <section class="data-card card" aria-labelledby="table-title">
+            <header class="card-head"><div class="section-name"><span class="section-icon"><i data-icon="table"></i></span><h2 id="table-title">实验数据</h2><span id="table-count" class="count"></span></div><div class="actions"><button class="button small" id="csv"><i data-icon="download"></i>CSV</button><button class="button small primary" id="add-row"><i data-icon="plus"></i>添加记录</button></div></header>
+            <div class="matrix-toolbar"><div class="segmented" role="group" aria-label="数据视图"><button data-view="table"><i data-icon="table"></i>原始数据</button><button data-view="heat"><i data-icon="heat"></i>消融热图</button></div><span id="matrix-key" hidden><i></i>低于基线 <i></i>高于基线</span></div>
+            <div id="raw-table" class="table-scroll"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+            <div id="heat-table" class="table-scroll" hidden></div>
+            <p class="table-help" id="table-help"></p>
+          </section>
+        </section>
+        <section id="empty-library" class="card empty" hidden><h1>新建第一份实验记录</h1><p>给实验命名并设置指标，或从已有的 CSV 表格开始。</p><button class="button primary" id="first-book">新建实验</button></section>
+      </div>
+    </main>
+  </div>
+  <dialog id="dialog"><form id="dialog-form"><header class="dialog-head"><h2 id="dialog-title"></h2><button class="icon-button" type="button" data-close aria-label="关闭"><i data-icon="close"></i></button></header><div id="dialog-body"></div><p id="dialog-error" role="alert" hidden></p><footer class="dialog-foot"><button class="button" type="button" data-close>取消</button><button id="dialog-submit" class="button primary" type="submit">保存</button></footer></form></dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <noscript>请启用 JavaScript 以编辑数据、绘图和保存实验。</noscript>
+</body>
+</html>

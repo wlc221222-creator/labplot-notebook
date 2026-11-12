@@ -15,7 +15,7 @@
       id, title, description: '', columns, rows: [], baseline: '', selected: '',
       chart: {
         x: 0, y: 1, type: 'scatter', mode: 'raw',
-        color: '#147859', grid: true, showValues: true, title: '', ...chart
+        color: '#6387f1', grid: true, showValues: true, title: '', ...chart
       },
       source: null, modified: false
     };
@@ -84,18 +84,29 @@
   }
 
   function deltaUnit(unit) {
-    return unit === '%' ? '个百分点' : unit;
+    return ['%', '％', '百分比'].includes(unit) ? '个百分点' : unit;
+  }
+
+  function difference(left, right) {
+    const a = number(left), b = number(right);
+    if (a === null || b === null) return null;
+    if (a === b) return 0;
+    // Align the two decimal measurements before subtracting close scores.
+    function decimalParts(value) {
+      const [mantissa, exponent = '0'] = String(value).split('e');
+      const [integer, fraction = ''] = mantissa.split('.');
+      return { digits: BigInt(integer + fraction), power: Number(exponent) - fraction.length };
+    }
+    const l = decimalParts(a), r = decimalParts(b), power = Math.min(l.power, r.power);
+    const digits = l.digits * 10n ** BigInt(l.power - power) - r.digits * 10n ** BigInt(r.power - power);
+    return number(String(digits) + 'e' + String(power));
   }
 
   function compare(exp, selectedId, baselineId) {
     const selected = exp.rows.find(item => item.id === selectedId);
     const baseline = exp.rows.find(item => item.id === baselineId);
-    function difference(axis) {
-      const a = number(selected?.values[axis]);
-      const b = number(baseline?.values[axis]);
-      return a === null || b === null ? null : number(a - b);
-    }
-    return { dx: difference(exp.chart.x), dy: difference(exp.chart.y) };
+    const forAxis = axis => difference(selected?.values[axis], baseline?.values[axis]);
+    return { dx: forAxis(exp.chart.x), dy: forAxis(exp.chart.y) };
   }
 
   function points(exp) {
@@ -303,7 +314,7 @@
     return true;
   }
 
-  const api = { uid, samples, blank, row, number, fmt, deltaUnit, compare, points, parseColumn, columnHeader, csv, fromCSV, validBook };
+  const api = { uid, samples, blank, row, number, fmt, deltaUnit, difference, compare, points, parseColumn, columnHeader, csv, fromCSV, validBook };
   globalThis.LabModel = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })();

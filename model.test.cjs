@@ -159,3 +159,9 @@ test('保存结构允许空实验册、零和缺测，拒绝损坏的坐标、�
   }
   assert.equal(M.validBook(book([p, p])), false);
 });
+
+test('微小的十进制差值和全角百分号在显示和复制时一致', () => {
+  const p=M.blank('消融');p.rows=[M.row('基线',['1e-8','94.30']),M.row('对照',['1.01e-8','94.31'])];
+  assert.deepEqual(M.compare(p,p.rows[1].id,p.rows[0].id),{dx:1e-10,dy:0.01});
+  assert.equal(M.deltaUnit('％'),'个百分点');
+});
