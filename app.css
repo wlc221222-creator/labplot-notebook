@@ -98,6 +98,7 @@ dialog{background:#151e30;border-color:#364761}dialog .dialog-head,.dialog-foot{
  .side-heading,.workspace-info{display:none}#library{order:1;display:flex;flex-direction:row;gap:5px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:thin;align-items:center}
  .library-item{width:auto;min-width:max-content;padding:6px 10px;gap:5px;border-radius:7px;color:#aab8d1}.library-item:hover{background:#1c2740}.library-item[aria-current=true]{background:#202d48;border-color:#34466c;color:#dce5ff}.book-symbol,.library-item[aria-current=true] .book-symbol{width:18px;height:20px;color:#b0bff0;background:transparent}.book-symbol .ico{width:14px;height:14px}.book-label b{font-size:12px}.book-label small{display:none}
  .side-bottom{margin:0;padding:0;order:2;flex:none}.new-book{order:3;height:33px;width:auto;flex:none;margin:0;padding:0 12px}.side-import{height:33px;width:auto;padding:0 10px;color:#b9c7e0}.side-import:hover{background:#1b263d}
+ .side-bottom{display:flex;gap:2px}
  .topbar{position:absolute;right:clamp(18px,3.55vw,65px);top:0;height:66px;z-index:6;border:0;padding:0;background:transparent;pointer-events:none}.topbar .crumb{display:none}
  .analysis-grid{grid-template-columns:minmax(0,1.98fr) minmax(270px,.91fr)}
 }

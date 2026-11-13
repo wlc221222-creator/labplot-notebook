@@ -373,6 +373,23 @@
     const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name.replace(/[\\/:*?"<>|\r\n]/g,"_");
     document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
   }
+  el("backup-book").onclick=()=>{
+    saveFile(new Blob([JSON.stringify(book,null,2)],{type:"application/json;charset=utf-8"}),"LabPlot-实验册备份.json");
+    notify("已导出完整实验册");
+  };
+  el("restore-book").onclick=()=>{
+    showDialog("恢复实验册",'<label class="field">选择实验册备份文件<input type="file" name="file" accept=".json,application/json" required></label><p class="form-help">恢复将替换当前浏览器中的全部实验。请先备份当前实验册。</p>',async data=>{
+      const file=data.get("file");
+      if(!file?.name)throw Error("请选择实验册备份文件。");
+      let restored;
+      try { restored=unpack(await file.text()); }
+      catch { throw Error("文件不是有效的 LabPlot 实验册备份。当前实验未改变。"); }
+      try { localStorage.setItem(BOOK,JSON.stringify(restored)); }
+      catch { throw Error("浏览器无法保存恢复的数据，当前实验未改变。"); }
+      book=restored;dirty=false;pendingRecovery=false;warning="";activeId=book.experiments[0]?.id||"";
+      rememberActive();render();notify("已恢复 "+book.experiments.length+" 份实验");
+    },"替换并恢复");
+  };
   el("csv").onclick=()=>{const p=current();if(p)saveFile(new Blob([M.csv(p)],{type:"text/csv;charset=utf-8"}),p.title+".csv");};
   el("png").onclick=async()=>{
     const p=current();if(!p)return;
