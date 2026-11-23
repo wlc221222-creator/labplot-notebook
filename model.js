@@ -46,7 +46,7 @@
     bert.source = { label: 'Devlin et al. · NAACL 2019 · 表 5', url: 'https://aclanthology.org/N19-1423.pdf#page=8' };
 
     const efficient = experiment('efficientnet', 'EfficientNet 模型缩放', [
-      { name: '参数量', unit: 'M' }, { name: 'FLOPs', unit: 'B' },
+      { name: '参数量', unit: 'M', direction: 'down' }, { name: 'FLOPs', unit: 'B', direction: 'down' },
       { name: 'Top-1', unit: '%' }, { name: 'Top-5', unit: '%' }
     ], { x: 0, y: 2 });
     efficient.description = '比较 EfficientNet B0–B7 在 ImageNet 上的准确率、参数量和计算量。M 表示百万参数，B 表示十亿次浮点运算。';
@@ -283,7 +283,8 @@
         typeof exp.modified !== 'boolean' || !validSource(exp.source)) return false;
     if (!Array.isArray(exp.columns) || exp.columns.length < 2) return false;
     for (const column of exp.columns) {
-      if (!isObject(column) || !isString(column.name) || !isString(column.unit)) return false;
+      if (!isObject(column) || !isString(column.name) || !isString(column.unit) ||
+          (column.direction !== undefined && !['up', 'down'].includes(column.direction))) return false;
     }
     const chart = exp.chart;
     const validAxis = index => Number.isInteger(index) && index >= 0 && index < exp.columns.length;
@@ -314,7 +315,33 @@
     return true;
   }
 
-  const api = { uid, samples, blank, row, number, fmt, deltaUnit, difference, compare, points, parseColumn, columnHeader, csv, fromCSV, validBook };
+  function benefit(delta, column) {
+    return delta === null ? null : delta * (column.direction === 'down' ? -1 : 1);
+  }
+
+  function conclusion(exp, format = 'text') {
+    const a = exp.rows.find(r => r.id === exp.selected), b = exp.rows.find(r => r.id === exp.baseline);
+    if (!a || !b) return '';
+    const c = exp.columns[exp.chart.y], d = difference(a.values[exp.chart.y], b.values[exp.chart.y]);
+    if (d === null) return '';
+    const value = raw => fmt(raw) + (c.unit ? (c.unit === '%' ? '' : ' ') + c.unit : '');
+    const signed = d > 0 ? '+' + fmt(d) : fmt(d);
+    const source = exp.source ? (exp.modified ? '本地修改的记录，原始出处：' : '数据来源：') + exp.source.label : '数据来源：自建实验记录';
+    if (format === 'latex') {
+      const latex = s => String(s).replace(/[\\&%$#_{}~^]/g, ch => ({'\\':'\\textbackslash{}','~':'\\textasciitilde{}','^':'\\textasciicircum{}'}[ch] || '\\' + ch));
+      return '% ' + source.replace(/[\r\n]+/g, ' ') + '\n% 指标 & 基线（' + b.label.replace(/[\r\n]+/g, ' ') + '） & 对照（' + a.label.replace(/[\r\n]+/g, ' ') + '） & 差值\n' +
+        [c.name, value(b.values[exp.chart.y]), value(a.values[exp.chart.y]), signed + ' ' + deltaUnit(c.unit)].map(latex).join(' & ') + ' \\\\';
+    }
+    const delta = d === 0 ? '与基线持平' : (d > 0 ? '高于基线 ' : '低于基线 ') + fmt(Math.abs(d)) + ' ' + deltaUnit(c.unit);
+    const sentence = `在 ${c.name} 上，${b.label} 为 ${value(b.values[exp.chart.y])}，${a.label} 为 ${value(a.values[exp.chart.y])}，${delta}。`;
+    if (format === 'markdown') {
+      const md = s => String(s).replace(/[\\`*_[\]<>]/g, '\\$&').replace(/[\r\n]+/g, ' ');
+      return md(sentence) + '\n\n' + md(source) + (exp.source ? `（[原始出处](${exp.source.url})）` : '');
+    }
+    return sentence + '（' + source + '）';
+  }
+
+  const api = { uid, samples, blank, row, number, fmt, deltaUnit, difference, compare, points, parseColumn, columnHeader, csv, fromCSV, validBook, benefit, conclusion };
   globalThis.LabModel = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })();

@@ -165,3 +165,36 @@ test('微小的十进制差值和全角百分号在显示和复制时一致', ()
   assert.deepEqual(M.compare(p,p.rows[1].id,p.rows[0].id),{dx:1e-10,dy:0.01});
   assert.equal(M.deltaUnit('％'),'个百分点');
 });
+
+test('指标方向兼容旧备份，降低耗时为正向收益，JSON 保留方向', () => {
+  const [bert, efficient] = M.samples();
+  assert.equal(M.benefit(-3, {direction:'down'}), 3);
+  assert.equal(M.benefit(3, {direction:'down'}), -3);
+  assert.equal(M.benefit(-3, {}), -3);
+  assert.equal(M.benefit(null, {direction:'down'}), null);
+  assert.equal(efficient.columns[0].direction, 'down');
+  const backup=JSON.parse(JSON.stringify({version:1,experiments:[bert,efficient]}));
+  assert.equal(M.validBook(backup), true);
+  assert.equal(backup.experiments[1].columns[1].direction, 'down');
+  backup.experiments[0].columns[0].direction='sideways';
+  assert.equal(M.validBook(backup), false);
+});
+
+test('三种结论格式共享精确差值与来源，LaTeX 转义表格特殊字符', () => {
+  const [p]=M.samples();p.baseline='ltr';p.selected='bilstm';p.chart.y=4;
+  const text=M.conclusion(p);
+  assert.match(text, /77\.8 分.*84\.9 分.*高于基线 7\.1 分/);
+  assert.match(text, /NAACL 2019/);
+  assert.match(M.conclusion(p,'markdown'), /\[原始出处\]\(https:\/\//);
+  p.chart.y=1;
+  const latex=M.conclusion(p,'latex');
+  assert.match(latex,/84\.3\\% & 84\.1\\% & -0\.2 个百分点/);
+  assert.ok(latex.endsWith('\\\\'));
+  p.columns[1].name='Loss_a & b';
+  assert.ok(M.conclusion(p,'latex').includes('Loss\\_a \\& b'));
+  p.modified=true;
+  assert.match(M.conclusion(p),/本地修改的记录/);
+  p.rows.find(r=>r.id===p.selected).values[1]='';
+  assert.equal(M.conclusion(p),'');
+  p.selected='';assert.equal(M.conclusion(p),'');
+});

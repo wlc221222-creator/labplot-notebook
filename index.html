@@ -21,9 +21,8 @@
       <button class="new-book" id="new-book"><i data-icon="plus"></i>新建实验</button>
       <nav id="library" aria-label="实验列表"></nav>
       <div class="side-bottom">
-        <button class="side-import" id="import-book"><i data-icon="upload"></i>从 CSV 导入</button>
-        <button class="side-import" id="backup-book"><i data-icon="download"></i>备份实验册</button>
-        <button class="side-import" id="restore-book"><i data-icon="upload"></i>恢复实验册</button>
+        <button class="side-import" id="import-book"><i data-icon="upload"></i>导入 / 恢复</button>
+        <details class="file-menu"><summary class="side-import"><i data-icon="download"></i>导出 ▾</summary><div class="dropdown"><button id="backup-book">JSON 实验册备份</button><button id="export-html">含当前数据的 HTML</button></div></details>
         <div class="workspace-info"><i data-icon="drive"></i><div><b>本地工作区</b><small>数据存储在当前浏览器</small></div></div>
       </div>
     </aside>
@@ -34,6 +33,7 @@
         <div id="save-status" role="status"></div>
       </header>
       <div class="content">
+        <div class="workspace-tools"><button id="undo" class="copy-label" disabled>↶ 撤销 <kbd>Ctrl/⌘ Z</kbd></button><span>热图方向键移动 · Enter 锁定 · Esc 取消 · M 数值模式 · C 复制</span></div>
         <div id="warning" class="warning" role="alert" hidden></div>
         <section id="workspace" aria-label="当前实验">
           <div class="intro">
@@ -44,7 +44,7 @@
           <div class="analysis-grid">
             <section class="plot-card card" aria-labelledby="plot-title">
               <header class="card-head"><div class="section-name"><span class="section-icon"><i data-icon="chart"></i></span><h2 id="plot-title">结果图表</h2></div>
-                <div class="actions"><button class="icon-button" id="style-chart" title="图表样式" aria-label="图表样式"><i data-icon="sliders"></i></button><button class="button small" id="png"><i data-icon="download"></i>PNG</button></div>
+                <div class="actions"><button class="button small" id="style-chart" title="图表样式" aria-label="图表样式">⚙ 样式</button><button class="button small" id="png"><i data-icon="download"></i>PNG</button></div>
               </header>
               <div class="plot-toolbar">
                 <div class="segmented" role="group" aria-label="图表类型"><button data-type="bar"><i data-icon="bars"></i>柱状</button><button data-type="line"><i data-icon="line"></i>折线</button><button data-type="scatter"><i data-icon="scatter"></i>散点</button></div>
@@ -54,16 +54,16 @@
               <div class="plot-footer"><div class="axis-controls"><label id="x-wrap" hidden>X 轴 <select id="x-axis"></select></label><label><span id="y-caption">指标</span> <select id="y-axis"></select></label></div><span class="plot-hint">点选数据标记以比较</span></div>
             </section>
             <section class="comparison card" aria-labelledby="comparison-title">
-              <header class="card-head"><div class="section-name"><span class="section-icon"><i data-icon="compare"></i></span><h2 id="comparison-title">基线对照</h2></div><button class="copy-label" id="copy-result" title="复制当前指标的对照描述"><i data-icon="copy"></i>复制结论</button></header>
+              <header class="card-head"><div class="section-name"><span class="section-icon"><i data-icon="compare"></i></span><h2 id="comparison-title">基线对照</h2></div><div class="copy-group"><button class="copy-label" id="copy-result" title="复制当前指标的对照描述"><i data-icon="copy"></i>复制结论</button><details id="copy-menu"><summary aria-label="选择复制格式">▾</summary><div class="dropdown"><button data-copy-format="markdown">Markdown 对比句</button><button data-copy-format="latex">LaTeX booktabs 表格行</button></div></details></div></header>
               <div class="compare-body">
-                <div class="pair"><label>基线配置<select id="baseline"></select></label><label>对照配置<select id="selected"></select></label></div>
+                <div class="pair"><label>基线配置<select id="baseline"></select></label><button id="swap-pair" class="icon-button" title="互换基线与对照" aria-label="互换基线与对照">⇄</button><label>对照配置<select id="selected"></select></label></div>
                 <div id="comparison-readout" aria-live="polite"></div>
               </div>
             </section>
           </div>
           <section class="data-card card" aria-labelledby="table-title">
-            <header class="card-head"><div class="section-name"><span class="section-icon"><i data-icon="table"></i></span><h2 id="table-title">实验数据</h2><span id="table-count" class="count"></span></div><div class="actions"><button class="button small" id="csv"><i data-icon="download"></i>CSV</button><button class="button small primary" id="add-row"><i data-icon="plus"></i>添加记录</button></div></header>
-            <div class="matrix-toolbar"><div class="segmented" role="group" aria-label="数据视图"><button data-view="table"><i data-icon="table"></i>原始数据</button><button data-view="heat"><i data-icon="heat"></i>消融热图</button></div><span id="matrix-key" hidden><i></i>低于基线 <i></i>高于基线</span></div>
+            <header class="card-head"><div class="section-name"><span class="section-icon"><i data-icon="table"></i></span><h2 id="table-title">实验数据</h2><span id="table-count" class="count"></span></div><div class="actions"><button class="button small" id="add-column">+ 加列</button><button class="button small" id="csv"><i data-icon="download"></i>CSV</button><button class="button small primary" id="add-row"><i data-icon="plus"></i>添加记录</button></div></header>
+            <div class="matrix-toolbar"><div class="segmented" role="group" aria-label="数据视图"><button data-view="table"><i data-icon="table"></i>原始数据</button><button data-view="heat"><i data-icon="heat"></i>消融热图</button></div><span id="matrix-key" hidden><i></i>劣于基线 <i></i>优于基线</span></div>
             <div id="raw-table" class="table-scroll"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
             <div id="heat-table" class="table-scroll" hidden></div>
             <p class="table-help" id="table-help"></p>
@@ -75,6 +75,7 @@
   </div>
   <dialog id="dialog"><form id="dialog-form"><header class="dialog-head"><h2 id="dialog-title"></h2><button class="icon-button" type="button" data-close aria-label="关闭"><i data-icon="close"></i></button></header><div id="dialog-body"></div><p id="dialog-error" role="alert" hidden></p><footer class="dialog-foot"><button class="button" type="button" data-close>取消</button><button id="dialog-submit" class="button primary" type="submit">保存</button></footer></form></dialog>
   <div class="toast" id="toast" role="status" hidden></div>
+  <div id="heat-preview" class="heat-preview" role="tooltip" hidden></div>
   <noscript>请启用 JavaScript 以编辑数据、绘图和保存实验。</noscript>
 </body>
 </html>
